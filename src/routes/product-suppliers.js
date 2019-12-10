@@ -9,21 +9,21 @@ const productSupplierController = require(`${appRoot}/src/controllers/product-su
 router.post(
   "/",
   authenticate,
-  validator.validateObject("productSupplier"),
+  validator.validateResource("productSupplier"),
   productSupplierController.create
 );
 
 router.put(
   "/",
   authenticate,
-  validator.validateObject("productSupplier"),
+  validator.validateResource("productSupplier"),
   productSupplierController.update
 );
 
 router.delete(
   "/",
   authenticate,
-  validator.validateObject("productSupplier"),
+  validator.validateResource("productSupplier"),
   productSupplierController.remove
 );
 

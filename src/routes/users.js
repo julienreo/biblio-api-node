@@ -7,13 +7,13 @@ const validator = require(`${appRoot}/src/middleware/validator`);
 
 router.post(
   "/login",
-  validator.validateObject("userDetails"),
+  validator.validateResource("userDetails"),
   userController.login
 );
 
 router.post(
   "/",
-  validator.validateObject("user"),
+  validator.validateResource("user"),
   userController.create
 );
 

@@ -9,7 +9,7 @@ const {InsertionError} = require(`${appRoot}/src/modules/errors/database`);
 const ApiError = require(`${appRoot}/src/modules/errors/api`);
 const {dbErrorCodes} = require(`${appRoot}/src/config/constants`);
 
-const resourcesModelsMapping = {
+const resourceModelMapping = {
   user: User,
   product: Product,
   supplier: Supplier,
@@ -29,7 +29,7 @@ const retrieveOne = async (resourceName, data, errorMessage, options = {}) => {
   let resource;
 
   if (allowedResourceNames.includes(resourceName)) {
-    resource = await resourcesModelsMapping[resourceName].findOne(data, {connection});
+    resource = await resourceModelMapping[resourceName].findOne(data, {connection});
   } else {
     throw new ApiError("Invalid resource name");
   }
@@ -54,7 +54,7 @@ const insertOne = async (resourceName, data, errorMessage, options = {}) => {
   let resource;
 
   if (allowedResourceNames.includes(resourceName)) {
-    resource = new resourcesModelsMapping[resourceName](data);
+    resource = new resourceModelMapping[resourceName](data);
   } else {
     throw new ApiError("Invalid resource name");
   }
@@ -85,7 +85,7 @@ const updateOne = async (resourceName, data, condition, errors, options = {}) =>
 
   if (allowedResourceNames.includes(resourceName)) {
     try {
-      result = await resourcesModelsMapping[resourceName].modifyOne(data, condition, {connection});
+      result = await resourceModelMapping[resourceName].modifyOne(data, condition, {connection});
     } catch (e) {
       if (e.errno === dbErrorCodes.duplicateEntryError) {
         throw new InsertionError(errors.alreadyExists);
@@ -116,7 +116,7 @@ const removeOne = async (resourceName, data, errorMessage, options = {}) => {
   let result;
 
   if (allowedResourceNames.includes(resourceName)) {
-    result = await resourcesModelsMapping[resourceName].deleteOne(data, {connection});
+    result = await resourceModelMapping[resourceName].deleteOne(data, {connection});
   } else {
     throw new ApiError("Invalid resource name");
   }

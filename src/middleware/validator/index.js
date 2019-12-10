@@ -11,31 +11,31 @@ const productSchema = require(`${appRoot}/src/middleware/validator/schemas/produ
 const supplierSchema = require(`${appRoot}/src/middleware/validator/schemas/supplier`);
 const userDetailsSchema = require(`${appRoot}/src/middleware/validator/schemas/user-details`);
 const userSchema = require(`${appRoot}/src/middleware/validator/schemas/user`);
-const productsupplierSchema = require(`${appRoot}/src/middleware/validator/schemas/product-supplier`);
+const productSupplierSchema = require(`${appRoot}/src/middleware/validator/schemas/product-supplier`);
 const logger = require(`${appRoot}/lib/logger`);
 
-const resourcesSchemasMapping = {
+const resourceSchemaMapping = {
   user: userSchema,
   userDetails: userDetailsSchema,
   product: productSchema,
   supplier: supplierSchema,
-  productSupplier: productsupplierSchema
+  productSupplier: productSupplierSchema
 };
 
 /**
- * Based on the object name supplied, the function validates the corresponding JSON schema
+ * Based on the resource name supplied, the function validates the corresponding JSON schema
  *
- * @param {string} objectName
+ * @param {string} objectResource
  * @returns {Function}
  */
-const validateObject = (objectName) => {
+const validateResource = (objectResource) => {
   return (req, res, next) => {
     const data = req.body;
-    const allowedObjectNames = ["user", "userDetails", "product", "supplier", "productSupplier"];
+    const allowedResourcesNames = ["user", "userDetails", "product", "supplier", "productSupplier"];
     let schema;
 
-    if (allowedObjectNames.includes(objectName)) {
-      schema = resourcesSchemasMapping[objectName];
+    if (allowedResourcesNames.includes(objectResource)) {
+      schema = resourceSchemaMapping[objectResource];
     } else {
       return next(new ApiError("Invalid object name"));
     }
@@ -84,6 +84,6 @@ const validateParam = (paramName, typeName) => {
 };
 
 module.exports = {
-  validateObject,
+  validateResource,
   validateParam
 };

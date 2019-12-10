@@ -18,21 +18,21 @@ router.post(
   "/:productId/suppliers",
   authenticate,
   validator.validateParam("productId", "number"),
-  validator.validateObject("supplier"),
+  validator.validateResource("supplier"),
   supplierController.create
 );
 
 router.post(
   "/",
   authenticate,
-  validator.validateObject("product"),
+  validator.validateResource("product"),
   productController.create
 );
 
 router.put(
   "/:productId",
   authenticate,
-  validator.validateObject("product"),
+  validator.validateResource("product"),
   productController.update
 );
 
