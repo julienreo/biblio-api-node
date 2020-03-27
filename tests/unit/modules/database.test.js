@@ -4,7 +4,7 @@ const {expect} = require("chai");
 const sinon = require("sinon");
 const sandbox = sinon.createSandbox();
 
-const {db, formatQuery} = require(`${appRoot}/src/modules/database`);
+const {databaseClient, formatQuery} = require(`${appRoot}/src/modules/database`);
 const {FormatQueryError} = require(`${appRoot}/src/modules/errors/database`);
 const {PromisePool} = require(`${appRoot}/node_modules/mysql2/promise`);
 
@@ -49,11 +49,11 @@ describe("query", () => {
       ]
     ];
 
-    before(() => sandbox.stub(PromisePool.prototype, "execute").returns(executionResult));
-    after(() => sandbox.restore());
+    beforeEach(() => sandbox.stub(PromisePool.prototype, "execute").returns(executionResult));
+    afterEach(() => sandbox.restore());
 
     it("should return the result of the execution of a query", async () => {
-      const result = await db.query(
+      const result = await databaseClient.query(
         "SELECT * FROM user WHERE email = :email",
         {params: {email: "johndoe@gmail.com"}}
       );
@@ -77,11 +77,11 @@ describe("query", () => {
       ]
     ];
 
-    before(() => sandbox.stub(PromisePool.prototype, "query").returns(executionResult));
-    after(() => sandbox.restore());
+    beforeEach(() => sandbox.stub(PromisePool.prototype, "query").returns(executionResult));
+    afterEach(() => sandbox.restore());
 
     it("should return the result of the execution of a query", async () => {
-      const result = await db.query("SELECT * FROM user", {});
+      const result = await databaseClient.query("SELECT * FROM user", {});
       expect(result).to.not.be.undefined;
       expect(result).to.deep.equal(executionResult[0]);
     });

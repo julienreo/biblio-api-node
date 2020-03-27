@@ -7,14 +7,17 @@ const {expect} = chai;
 
 const app = require(`${appRoot}/index`);
 const {getAccessToken} = require(`${appRoot}/tests/utils`);
-const {db} = require(`${appRoot}/src/modules/database`);
+const {databaseClient} = require(`${appRoot}/src/modules/database`);
+const {cacheClient} = require(`${appRoot}/src/modules/cache`);
 
 describe("products", () => {
   let accessToken;
 
   before(async () => {
-    // Restore tables to their default values before running the tests
-    await db.query("CALL reset_tables();", {});
+    // Flush cache
+    await cacheClient._deleteAll();
+    // Restore tables to their default values
+    await databaseClient.query("CALL reset_tables();", {});
     accessToken = await getAccessToken();
   });
 
@@ -32,7 +35,7 @@ describe("products", () => {
               id: 1,
               name: "insert fileté",
               notes: "notes",
-              fkUser: 1,
+              fkCompany: 1,
               creationDate: "2019-11-23T23:00:00.000Z"
             }
           });

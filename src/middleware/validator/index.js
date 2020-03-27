@@ -25,17 +25,17 @@ const resourceSchemaMapping = {
 /**
  * Based on the resource name supplied, the function validates the corresponding JSON schema
  *
- * @param {string} objectResource
+ * @param {string} resourceName
  * @returns {Function}
  */
-const validateResource = (objectResource) => {
+const validateResource = (resourceName) => {
   return (req, res, next) => {
     const data = req.body;
-    const allowedResourcesNames = ["user", "userDetails", "product", "supplier", "productSupplier"];
+    const allowedResourceNames = ["user", "userDetails", "product", "supplier", "productSupplier"];
     let schema;
 
-    if (allowedResourcesNames.includes(objectResource)) {
-      schema = resourceSchemaMapping[objectResource];
+    if (allowedResourceNames.includes(resourceName)) {
+      schema = resourceSchemaMapping[resourceName];
     } else {
       return next(new ApiError("Invalid object name"));
     }

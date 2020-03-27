@@ -7,7 +7,7 @@ class Product extends Resource {
    * @param {Object} data
    */
   constructor(data) {
-    super(["name", "notes", "fkUser"], data);
+    super(["name", "notes", "fkCompany"], data);
     Object.freeze(this);
   }
 }

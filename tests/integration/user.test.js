@@ -7,12 +7,19 @@ const {expect} = chai;
 const _ = require("lodash");
 
 const app = require(`${appRoot}/index`);
-const {db} = require(`${appRoot}/src/modules/database`);
+const {getAccessToken} = require(`${appRoot}/tests/utils`);
+const {databaseClient} = require(`${appRoot}/src/modules/database`);
+const {cacheClient} = require(`${appRoot}/src/modules/cache`);
 
 describe("users", () => {
+  let accessToken;
+
   before(async () => {
-    // Restore tables to their default values before running the tests
-    await db.query("CALL reset_tables();", {});
+    // Flush cache
+    await cacheClient._deleteAll();
+    // Restore tables to their default values
+    await databaseClient.query("CALL reset_tables();", {});
+    accessToken = await getAccessToken();
   });
 
   describe("GET /users/login", () => {
@@ -91,7 +98,10 @@ describe("users", () => {
       chai
         .request(app)
         .post("/users")
-        .set("Content-Type", "application/json")
+        .set({
+          "access-token": accessToken,
+          "Content-Type": "application/json"
+        })
         .send({
           firstname: "John",
           lastname: "Doe",
@@ -107,6 +117,27 @@ describe("users", () => {
           });
           expect(res.body.accessToken).to.not.be.undefined;
           expect(res.body.accessToken).to.be.a("string");
+          done();
+        });
+    });
+
+    it("should return an error object if the access token is missing", (done) => {
+      chai
+        .request(app)
+        .post("/users")
+        .set("Content-Type", "application/json")
+        .send({
+          firstname: "John",
+          lastname: "Doe",
+          email: "johndoe2@gmail.com",
+          password: "motdepasse"
+        })
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(401);
+          expect(res.body).to.deep.equal({
+            error: "Token manquant"
+          });
           done();
         });
     });

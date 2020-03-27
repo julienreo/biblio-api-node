@@ -11,7 +11,13 @@ router.get(
   "/:supplierId",
   authenticate,
   validator.validateParam("supplierId", "number"),
-  supplierController.find
+  supplierController.fetchOne
+);
+
+router.get(
+  "/",
+  authenticate,
+  supplierController.fetchAll
 );
 
 router.post(

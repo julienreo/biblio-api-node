@@ -8,8 +8,8 @@ const passwordService = require(`${appRoot}/src/services/password`);
 const {ValidationError} = require(`${appRoot}/src/modules/errors/resource`);
 
 describe("comparePassword", () => {
-  before(() => sandbox.stub(bcrypt, "compare").returns(false));
-  after(() => sandbox.restore());
+  beforeEach(() => sandbox.stub(bcrypt, "compare").returns(false));
+  afterEach(() => sandbox.restore());
 
   it("should throw an error if the user password is wrong", async () => {
     try {
@@ -21,8 +21,8 @@ describe("comparePassword", () => {
 });
 
 describe("hashPassword", () => {
-  before(() => sandbox.stub(bcrypt, "compare").returns(true));
-  after(() => sandbox.restore());
+  beforeEach(() => sandbox.stub(bcrypt, "compare").returns(true));
+  afterEach(() => sandbox.restore());
 
   it("should return a hashed password using bcrypt", async () => {
     const result = await passwordService.hashPassword("password", 10);

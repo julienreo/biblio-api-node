@@ -1,12 +1,12 @@
 const appRoot = require("app-root-path");
 
-const {db} = require(`${appRoot}/src/modules/database`);
+const {databaseClient} = require(`${appRoot}/src/modules/database`);
 
 /**
  * @param {Function} handler
  */
 const makeTransaction = async (handler) => {
-  const connection = await db.pool.getConnection();
+  const connection = await databaseClient.pool.getConnection();
 
   await connection.beginTransaction();
 

@@ -7,14 +7,17 @@ const {expect} = chai;
 
 const app = require(`${appRoot}/index`);
 const {getAccessToken} = require(`${appRoot}/tests/utils`);
-const {db} = require(`${appRoot}/src/modules/database`);
+const {databaseClient} = require(`${appRoot}/src/modules/database`);
+const {cacheClient} = require(`${appRoot}/src/modules/cache`);
 
 describe("productSupplier", () => {
   let accessToken;
 
   before(async () => {
-    // Restore tables to their default values before running the tests
-    await db.query("CALL reset_tables();", {});
+    // Flush cache
+    await cacheClient._deleteAll();
+    // Restore tables to their default values
+    await databaseClient.query("CALL reset_tables();", {});
     accessToken = await getAccessToken();
   });
 
@@ -24,7 +27,7 @@ describe("productSupplier", () => {
 
       chai
         .request(app)
-        .post("/productSuppliers")
+        .post("/productsSuppliers")
         .set({
           "access-token": accessToken,
           "Content-Type": "application/json"
@@ -46,7 +49,7 @@ describe("productSupplier", () => {
 
       chai
         .request(app)
-        .post("/productSuppliers")
+        .post("/productsSuppliers")
         .set("access-token", accessToken)
         .send(productSupplier)
         .end((err, res) => {
@@ -68,7 +71,7 @@ describe("productSupplier", () => {
 
       chai
         .request(app)
-        .post("/productSuppliers")
+        .post("/productsSuppliers")
         .set("access-token", expiredAccessToken)
         .send({})
         .end((err, res) => {
@@ -88,7 +91,7 @@ describe("productSupplier", () => {
 
       chai
         .request(app)
-        .delete("/productSuppliers")
+        .delete("/productsSuppliers")
         .set("access-token", accessToken)
         .send(productSupplier)
         .end((err, res) => {
@@ -107,7 +110,7 @@ describe("productSupplier", () => {
 
       chai
         .request(app)
-        .delete("/productSuppliers")
+        .delete("/productsSuppliers")
         .set("access-token", accessToken)
         .send(unexistingProductSupplier)
         .end((err, res) => {

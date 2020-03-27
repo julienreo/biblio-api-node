@@ -7,7 +7,7 @@ class User extends Resource {
    * @param {Object} data
    */
   constructor(data) {
-    super(["firstname", "lastname", "email", "password"], data);
+    super(["firstname", "lastname", "email", "password", "fkCompany"], data);
     Object.freeze(this);
   }
 }

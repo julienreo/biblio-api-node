@@ -11,7 +11,13 @@ router.get(
   "/:productId",
   authenticate,
   validator.validateParam("productId", "number"),
-  productController.find
+  productController.fetchOne
+);
+
+router.get(
+  "/",
+  authenticate,
+  productController.fetchAll
 );
 
 router.post(

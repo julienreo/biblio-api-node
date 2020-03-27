@@ -82,6 +82,6 @@ class Database {
 }
 
 module.exports = {
-  db: new Database(),
+  databaseClient: new Database(),
   formatQuery
 };

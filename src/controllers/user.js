@@ -20,7 +20,7 @@ const login = async (req, res, next) => {
 
     await passwordService.comparePassword(userData.password, user.password);
 
-    const accessToken = await authenticationService.getAccessToken(user.id);
+    const accessToken = await authenticationService.getAccessToken(user.id, user.fkCompany);
 
     logger.info({ip: req.ip, path: req.originalUrl, method: req.method, userEmail: user.email});
     res.send({success: true, message: "Connexion réussie", accessToken});
@@ -40,16 +40,23 @@ const login = async (req, res, next) => {
 const create = async (req, res, next) => {
   try {
     const userData = req.body;
+    const {companyId} = req.accessToken;
+
+    userData.fkCompany = companyId;
     userData.password = await passwordService.hashPassword(userData.password, config.bcryptSaltRound);
 
     const userId = await resourceService.insertOne("user", userData, "L'utilisateur existe déjà");
 
-    const accessToken = await authenticationService.getAccessToken(userId);
+    const accessToken = await authenticationService.getAccessToken(userId, companyId);
 
     logger.info({ip: req.ip, path: req.originalUrl, method: req.method, userEmail: userData.email});
     res.send({success: true, message: "Utilisateur créé avec succès", accessToken});
   } catch (e) {
     if (e instanceof InsertionError) {
+      logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userEmail: req.body.email, error: e});
+      return res.status(e.status).send({error: e.getMessage()});
+    }
+    if (e instanceof NotFoundError) {
       logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userEmail: req.body.email, error: e});
       return res.status(e.status).send({error: e.getMessage()});
     }

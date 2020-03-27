@@ -8,6 +8,8 @@ const {NotFoundError} = require(`${appRoot}/src/modules/errors/resource`);
 const {InsertionError} = require(`${appRoot}/src/modules/errors/database`);
 const ApiError = require(`${appRoot}/src/modules/errors/api`);
 const {dbErrorCodes} = require(`${appRoot}/src/config/constants`);
+const {cacheClient} = require(`${appRoot}/src/modules/cache`);
+const utils = require(`${appRoot}/lib/utils`);
 
 const resourceModelMapping = {
   user: User,
@@ -25,17 +27,49 @@ const resourceModelMapping = {
  */
 const retrieveOne = async (resourceName, data, errorMessage, options = {}) => {
   const {connection} = options;
+  const resourceModel = resourceModelMapping[resourceName];
   const allowedResourceNames = ["user", "product", "supplier"];
   let resource;
 
   if (allowedResourceNames.includes(resourceName)) {
-    resource = await resourceModelMapping[resourceName].findOne(data, {connection});
+    // Retrieve resource from cache, if none is found retrieve it from database and save it in cache
+    const cacheKey = utils.sha1(`${resourceName}#data:${JSON.stringify(data)}`);
+    resource = await cacheClient.find(cacheKey);
+    if (resource === null) {
+      resource = await resourceModel.findOne(data, {connection});
+      if (typeof resource !== "undefined") {
+        await cacheClient.save(cacheKey, JSON.stringify(resource));
+      }
+    }
   } else {
     throw new ApiError("Invalid resource name");
   }
 
   if (typeof resource === "undefined") {
     throw new NotFoundError(errorMessage);
+  }
+
+  return resource;
+};
+
+const retrieveAll = async (resourceName, data, errorMessage, options = {}) => {
+  const {connection} = options;
+  const resourceModel = resourceModelMapping[resourceName];
+  const allowedResourceNames = ["user", "product", "supplier"];
+  let resource;
+
+  if (allowedResourceNames.includes(resourceName)) {
+    // Retrieve resource from cache, if none is found retrieve it from database and save it in cache
+    const cacheKey = utils.sha1(`${resourceName}#data:${JSON.stringify(data)}`);
+    resource = await cacheClient.find(cacheKey);
+    if (resource === null) {
+      resource = await resourceModel.findAll(data, {connection});
+      if (typeof resource !== "undefined") {
+        await cacheClient.save(cacheKey, JSON.stringify(resource));
+      }
+    }
+  } else {
+    throw new ApiError("Invalid resource name");
   }
 
   return resource;
@@ -50,11 +84,12 @@ const retrieveOne = async (resourceName, data, errorMessage, options = {}) => {
  */
 const insertOne = async (resourceName, data, errorMessage, options = {}) => {
   const {connection} = options;
+  const resourceModel = resourceModelMapping[resourceName];
   const allowedResourceNames = ["user", "product", "supplier", "productSupplier"];
   let resource;
 
   if (allowedResourceNames.includes(resourceName)) {
-    resource = new resourceModelMapping[resourceName](data);
+    resource = new resourceModel(data);
   } else {
     throw new ApiError("Invalid resource name");
   }
@@ -80,12 +115,16 @@ const insertOne = async (resourceName, data, errorMessage, options = {}) => {
  */
 const updateOne = async (resourceName, data, condition, errors, options = {}) => {
   const {connection} = options;
+  const resourceModel = resourceModelMapping[resourceName];
   const allowedResourceNames = ["product", "supplier", "productSupplier"];
   let result;
 
   if (allowedResourceNames.includes(resourceName)) {
     try {
-      result = await resourceModelMapping[resourceName].modifyOne(data, condition, {connection});
+      result = await resourceModel.modifyOne(data, condition, {connection});
+      // Delete resource from cache
+      const cacheKey = utils.sha1(`${resourceName}#data:${JSON.stringify(condition)}`);
+      await cacheClient.delete(cacheKey);
     } catch (e) {
       if (e.errno === dbErrorCodes.duplicateEntryError) {
         throw new InsertionError(errors.alreadyExists);
@@ -112,11 +151,12 @@ const updateOne = async (resourceName, data, condition, errors, options = {}) =>
  */
 const removeOne = async (resourceName, data, errorMessage, options = {}) => {
   const {connection} = options;
+  const resourceModel = resourceModelMapping[resourceName];
   const allowedResourceNames = ["product", "supplier", "productSupplier"];
   let result;
 
   if (allowedResourceNames.includes(resourceName)) {
-    result = await resourceModelMapping[resourceName].deleteOne(data, {connection});
+    result = await resourceModel.deleteOne(data, {connection});
   } else {
     throw new ApiError("Invalid resource name");
   }
@@ -130,6 +170,7 @@ const removeOne = async (resourceName, data, errorMessage, options = {}) => {
 
 module.exports = {
   retrieveOne,
+  retrieveAll,
   insertOne,
   updateOne,
   removeOne

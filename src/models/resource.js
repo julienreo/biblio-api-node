@@ -1,6 +1,6 @@
 const appRoot = require("app-root-path");
 
-const {db} = require(`${appRoot}/src/modules/database`);
+const {databaseClient} = require(`${appRoot}/src/modules/database`);
 const {camelToSnakeObject, snakeToCamelObject} = require(`${appRoot}/lib/utils`);
 
 class Resource {
@@ -34,9 +34,24 @@ class Resource {
 
     const sql = `SELECT * FROM ${table} WHERE ${clause}`;
 
-    const res = await db.query(sql, {params: newData, connection});
+    const res = await databaseClient.query(sql, {params: newData, connection});
 
     return typeof res[0] === "undefined" ? res[0] : snakeToCamelObject(res[0]);
+  }
+
+  static async findAll(data, options = {}) {
+    const {connection} = options;
+    const {table} = this;
+
+    const newData = camelToSnakeObject(data);
+
+    const clause = Object.keys(newData).map((key) => `${key} = :${key}`).join(" AND ");
+
+    const sql = `SELECT * FROM ${table} WHERE ${clause}`;
+
+    const res = await databaseClient.query(sql, {params: newData, connection});
+
+    return typeof res[0] === "undefined" ? [] : res.map((v) => snakeToCamelObject(v));
   }
 
   /**
@@ -54,7 +69,7 @@ class Resource {
 
     const sql = `INSERT INTO ${table} (${keys.join(",")}) VALUES (${preparedValues.join(",")})`;
 
-    return await db.query(sql, {params: resource, connection});
+    return await databaseClient.query(sql, {params: resource, connection});
   }
 
   /**
@@ -75,7 +90,7 @@ class Resource {
 
     const sql = `UPDATE ${table} SET ${preparedValues} WHERE ${clause}`;
 
-    return await db.query(
+    return await databaseClient.query(
       sql,
       {
         params: {...newData, ...newCondition},
@@ -99,7 +114,7 @@ class Resource {
 
     const sql = `DELETE FROM ${table} WHERE ${condition}`;
 
-    return await db.query(sql, {params: newObject, connection});
+    return await databaseClient.query(sql, {params: newObject, connection});
   }
 }
 

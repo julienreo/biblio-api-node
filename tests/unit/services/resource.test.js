@@ -13,6 +13,74 @@ const Resource = require(`${appRoot}/src/models/resource`);
 const ApiError = require(`${appRoot}/src/modules/errors/api`);
 const {NotFoundError} = require(`${appRoot}/src/modules/errors/resource`);
 const {InsertionError} = require(`${appRoot}/src/modules/errors/database`);
+const {_Cache} = require(`${appRoot}/src/modules/cache`);
+
+describe("retrieveAll", () => {
+  describe("products", () => {
+    const products = [
+      {
+        id: 1,
+        name: "insert fileté",
+        notes: "notes",
+        fkCompany: 1,
+        creationDate: "2019-11-23T23:00:00.000Z"
+      },
+      {
+        id: 2,
+        name: "insert fileté 2",
+        notes: "notes",
+        fkCompany: 1,
+        creationDate: "2019-11-23T23:00:00.000Z"
+      }
+    ];
+    beforeEach(() => {
+      sandbox.stub(Product, "findAll").returns(products);
+      sandbox.stub(_Cache.prototype, "find").returns(null);
+      sandbox.stub(_Cache.prototype, "save");
+    });
+    afterEach(() => sandbox.restore());
+
+    it("should return all products", async () => {
+      const result = await resourceService.retrieveAll("product", {}, "error message");
+      expect(result).to.not.be.undefined;
+      expect(result).to.deep.equal(products);
+    });
+  });
+
+  describe("suppliers", () => {
+    const suppliers = [
+      {
+        id: 1,
+        name: "rs-online",
+        website: "https://fr.rs-online.com",
+        notes: "notes",
+        fkCompany: 1,
+        creationDate: "2019-11-23T23:00:00.000Z"
+      },
+      {
+        id: 2,
+        name: "rs-online-2",
+        website: "https://fr.rs-online-2.com",
+        notes: "notes",
+        fkCompany: 1,
+        creationDate: "2019-11-23T23:00:00.000Z"
+      }
+    ];
+
+    beforeEach(() => {
+      sandbox.stub(Supplier, "findAll").returns(suppliers);
+      sandbox.stub(_Cache.prototype, "find").returns(null);
+      sandbox.stub(_Cache.prototype, "save");
+    });
+    afterEach(() => sandbox.restore());
+
+    it("should return all suppliers", async () => {
+      const result = await resourceService.retrieveAll("supplier", {}, "error message");
+      expect(result).to.not.be.undefined;
+      expect(result).to.deep.equal(suppliers);
+    });
+  });
+});
 
 describe("retrieveOne", () => {
   describe("user", () => {
@@ -25,8 +93,12 @@ describe("retrieveOne", () => {
       creationDate: "2019-11-22T20:14:20.000Z"
     };
 
-    before(() => sandbox.stub(User, "findOne").returns(user));
-    after(() => sandbox.restore());
+    beforeEach(() => {
+      sandbox.stub(User, "findOne").returns(user);
+      sandbox.stub(_Cache.prototype, "find").returns(null);
+      sandbox.stub(_Cache.prototype, "save");
+    });
+    afterEach(() => sandbox.restore());
 
     it("should return a User resource", async () => {
       const result = await resourceService.retrieveOne("user", {}, "error message");
@@ -40,12 +112,16 @@ describe("retrieveOne", () => {
       id: 1,
       name: "insert fileté",
       notes: "notes",
-      fkUser: 1,
+      fkCompany: 1,
       creationDate: "2019-11-22T20:14:20.000Z"
     };
 
-    before(() => sandbox.stub(Product, "findOne").returns(product));
-    after(() => sandbox.restore());
+    beforeEach(() => {
+      sandbox.stub(Product, "findOne").returns(product);
+      sandbox.stub(_Cache.prototype, "find").returns(null);
+      sandbox.stub(_Cache.prototype, "save");
+    });
+    afterEach(() => sandbox.restore());
 
     it("should return a Product resource", async () => {
       const result = await resourceService.retrieveOne("product", {}, "error message");
@@ -60,12 +136,16 @@ describe("retrieveOne", () => {
       name: "rs-online",
       website: "https://fr.rs-online.com",
       notes: "notes",
-      fkUser: 1,
+      fkCompany: 1,
       creationDate: "2019-11-22T20:14:20.000Z"
     };
 
-    before(() => sandbox.stub(Supplier, "findOne").returns(supplier));
-    after(() => sandbox.restore());
+    beforeEach(() => {
+      sandbox.stub(Supplier, "findOne").returns(supplier);
+      sandbox.stub(_Cache.prototype, "find").returns(null);
+      sandbox.stub(_Cache.prototype, "save");
+    });
+    afterEach(() => sandbox.restore());
 
     it("should return a Supplier resource", async () => {
       const result = await resourceService.retrieveOne("supplier", {}, "error message");
@@ -85,9 +165,13 @@ describe("retrieveOne", () => {
   });
 
   describe("resource not found", () => {
-    // eslint-disable-next-line no-undefined
-    before(() => sandbox.stub(User, "findOne").returns(undefined));
-    after(() => sandbox.restore());
+    beforeEach(() => {
+      // eslint-disable-next-line no-undefined
+      sandbox.stub(User, "findOne").returns(undefined);
+      sandbox.stub(_Cache.prototype, "find").returns(null);
+      sandbox.stub(_Cache.prototype, "save");
+    });
+    afterEach(() => sandbox.restore());
 
     it("should throw an error if the resource was not found", async () => {
       try {
@@ -101,8 +185,8 @@ describe("retrieveOne", () => {
 
 describe("insertOne", () => {
   describe("user", () => {
-    before(() => sandbox.stub(Resource.prototype, "save").returns({affectedRows: 1, insertId: 1}));
-    after(() => sandbox.restore());
+    beforeEach(() => sandbox.stub(Resource.prototype, "save").returns({affectedRows: 1, insertId: 1}));
+    afterEach(() => sandbox.restore());
 
     it("should return the ID of the inserted user", async () => {
       const result = await resourceService.insertOne("user", {}, "error message");
@@ -112,8 +196,8 @@ describe("insertOne", () => {
   });
 
   describe("product", () => {
-    before(() => sandbox.stub(Resource.prototype, "save").returns({affectedRows: 1, insertId: 1}));
-    after(() => sandbox.restore());
+    beforeEach(() => sandbox.stub(Resource.prototype, "save").returns({affectedRows: 1, insertId: 1}));
+    afterEach(() => sandbox.restore());
 
     it("should return the ID of the inserted product", async () => {
       const result = await resourceService.insertOne("product", {}, "error message");
@@ -123,8 +207,8 @@ describe("insertOne", () => {
   });
 
   describe("supplier", () => {
-    before(() => sandbox.stub(Resource.prototype, "save").returns({affectedRows: 1, insertId: 1}));
-    after(() => sandbox.restore());
+    beforeEach(() => sandbox.stub(Resource.prototype, "save").returns({affectedRows: 1, insertId: 1}));
+    afterEach(() => sandbox.restore());
 
     it("should return the ID of the inserted supplier", async () => {
       const result = await resourceService.insertOne("supplier", {}, "error message");
@@ -134,8 +218,8 @@ describe("insertOne", () => {
   });
 
   describe("productSupplier", () => {
-    before(() => sandbox.stub(Resource.prototype, "save").returns({affectedRows: 1, insertId: 0}));
-    after(() => sandbox.restore());
+    beforeEach(() => sandbox.stub(Resource.prototype, "save").returns({affectedRows: 1, insertId: 0}));
+    afterEach(() => sandbox.restore());
 
     it("should not return any ID for the creation of an association between a product and supplier", async () => {
       const result = await resourceService.insertOne("productSupplier", {}, "error message");
@@ -148,8 +232,8 @@ describe("insertOne", () => {
     const error = new Error();
     error.errno = 1062;
 
-    before(() => sandbox.stub(Resource.prototype, "save").throws(error));
-    after(() => sandbox.restore());
+    beforeEach(() => sandbox.stub(Resource.prototype, "save").throws(error));
+    afterEach(() => sandbox.restore());
 
     it("should throw an error if the resource already exists", async () => {
       try {
@@ -162,8 +246,8 @@ describe("insertOne", () => {
   });
 
   describe("handle error", () => {
-    before(() => sandbox.stub(Resource.prototype, "save").throws(new Error()));
-    after(() => sandbox.restore());
+    beforeEach(() => sandbox.stub(Resource.prototype, "save").throws(new Error()));
+    afterEach(() => sandbox.restore());
 
     it("should throw again the error that has been catched", async () => {
       try {
@@ -187,8 +271,8 @@ describe("insertOne", () => {
 
 describe("updateOne", () => {
   describe("product", () => {
-    before(() => sandbox.stub(Product, "modifyOne").returns({affectedRows: 1, insertId: 0}));
-    after(() => sandbox.restore());
+    beforeEach(() => sandbox.stub(Product, "modifyOne").returns({affectedRows: 1, insertId: 0}));
+    afterEach(() => sandbox.restore());
 
     it("should return that one row has been affected", async () => {
       const result = await resourceService.updateOne(
@@ -203,8 +287,8 @@ describe("updateOne", () => {
   });
 
   describe("supplier", () => {
-    before(() => sandbox.stub(Supplier, "modifyOne").returns({affectedRows: 1, insertId: 0}));
-    after(() => sandbox.restore());
+    beforeEach(() => sandbox.stub(Supplier, "modifyOne").returns({affectedRows: 1, insertId: 0}));
+    afterEach(() => sandbox.restore());
 
     it("should return that one row has been affected", async () => {
       const result = await resourceService.updateOne(
@@ -219,8 +303,8 @@ describe("updateOne", () => {
   });
 
   describe("productSupplier", () => {
-    before(() => sandbox.stub(ProductSupplier, "modifyOne").returns({affectedRows: 1, insertId: 0}));
-    after(() => sandbox.restore());
+    beforeEach(() => sandbox.stub(ProductSupplier, "modifyOne").returns({affectedRows: 1, insertId: 0}));
+    afterEach(() => sandbox.restore());
 
     it("should return that one row has been affected", async () => {
       const result = await resourceService.updateOne(
@@ -235,8 +319,8 @@ describe("updateOne", () => {
   });
 
   describe("resource does not not exist", () => {
-    before(() => sandbox.stub(Product, "modifyOne").returns({affectedRows: 0}));
-    after(() => sandbox.restore());
+    beforeEach(() => sandbox.stub(Product, "modifyOne").returns({affectedRows: 0}));
+    afterEach(() => sandbox.restore());
 
     it("should throw an error if the resource does not exist", async () => {
       try {
@@ -271,11 +355,11 @@ describe("updateOne", () => {
     });
   });
 
-  describe("fields to update already exist and must be unique", () => {
-    before(() => sandbox.stub(Product, "modifyOne").throws({errno: 1062}));
-    after(() => sandbox.restore());
+  describe("fields to update already exists and must be unique", () => {
+    beforeEach(() => sandbox.stub(Product, "modifyOne").throws({errno: 1062}));
+    afterEach(() => sandbox.restore());
 
-    it("should throw an error if the values of the fields to update already exist and must be unique", async () => {
+    it("should throw an error if the values of the fields to update already exists and must be unique", async () => {
       try {
         await resourceService.updateOne(
           "product",
@@ -302,8 +386,8 @@ describe("updateOne", () => {
 
 describe("removeOne", () => {
   describe("product", () => {
-    before(() => sandbox.stub(Product, "deleteOne").returns({affectedRows: 1}));
-    after(() => sandbox.restore());
+    beforeEach(() => sandbox.stub(Product, "deleteOne").returns({affectedRows: 1}));
+    afterEach(() => sandbox.restore());
 
     it("should return that one row has been affected", async () => {
       const result = await resourceService.removeOne("product", {}, "error message");
@@ -313,8 +397,8 @@ describe("removeOne", () => {
   });
 
   describe("supplier", () => {
-    before(() => sandbox.stub(Supplier, "deleteOne").returns({affectedRows: 1}));
-    after(() => sandbox.restore());
+    beforeEach(() => sandbox.stub(Supplier, "deleteOne").returns({affectedRows: 1}));
+    afterEach(() => sandbox.restore());
 
     it("should return that one row has been affected", async () => {
       const result = await resourceService.removeOne("supplier", {}, "error message");
@@ -324,8 +408,8 @@ describe("removeOne", () => {
   });
 
   describe("productSupplier", () => {
-    before(() => sandbox.stub(ProductSupplier, "deleteOne").returns({affectedRows: 1}));
-    after(() => sandbox.restore());
+    beforeEach(() => sandbox.stub(ProductSupplier, "deleteOne").returns({affectedRows: 1}));
+    afterEach(() => sandbox.restore());
 
     it("should return that one row has been affected", async () => {
       const result = await resourceService.removeOne("productSupplier", {}, "error message");
@@ -345,8 +429,8 @@ describe("removeOne", () => {
   });
 
   describe("resource does not not exist", () => {
-    before(() => sandbox.stub(Product, "deleteOne").returns({affectedRows: 0}));
-    after(() => sandbox.restore());
+    beforeEach(() => sandbox.stub(Product, "deleteOne").returns({affectedRows: 0}));
+    afterEach(() => sandbox.restore());
 
     it("should throw an error if the resource does not exist", async () => {
       try {

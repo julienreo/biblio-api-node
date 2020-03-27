@@ -37,3 +37,11 @@ describe("camelToSnakeObject", () => {
     expect(result).to.deep.equal({camel_case: 1, camel_case_again: 2});
   });
 });
+
+describe("sha1", () => {
+  it("should calculate and return the SHA-1 hash of a string", () => {
+    const result = utils.sha1("string");
+    expect(result).to.not.be.undefined;
+    expect(result).to.equal("7LJSBEteoPZ57njsGhKQRznikE0=");
+  });
+});

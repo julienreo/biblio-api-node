@@ -9,11 +9,10 @@ const logger = require(`${appRoot}/lib/logger`);
 const create = async (req, res, next) => {
   try {
     const productSupplierData = req.body;
-    const userId = req.accessToken.id;
 
     await resourceService.insertOne(
       "productSupplier",
-      {...productSupplierData, fkUser: userId},
+      {...productSupplierData, fkCompany: req.accessToken.companyId},
       "L'association entre le produit et le fournisseur existe déjà"
     );
 
@@ -36,19 +35,18 @@ const create = async (req, res, next) => {
 const update = async (req, res, next) => {
   try {
     const {fkProduct, fkSupplier, notes} = req.body;
-    const userId = req.accessToken.id;
 
     // Notes field is the only one that can be updated but is optional, check that it has been passed
     if (typeof notes === "undefined") {
       const error = new ResourceError("Le champ à mettre à jour (notes) est manquant");
-      logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userId, error});
+      logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id, error});
       return res.status(error.status).send({error: error.getMessage()});
     }
 
     await resourceService.updateOne(
       "productSupplier",
       {notes},
-      {fkProduct, fkSupplier, fkUser: userId},
+      {fkProduct, fkSupplier, fkCompany: req.accessToken.companyId},
       {
         notFound: "L'association entre le produit et le fournisseur n'existe pas",
         alreadyExists: "Une association entre un produit et un fournisseur avec les mêmes caractéristiques existe déjà"
@@ -69,11 +67,10 @@ const update = async (req, res, next) => {
 const remove = async (req, res, next) => {
   try {
     const productSupplierData = req.body;
-    const userId = req.accessToken.id;
 
     await resourceService.removeOne(
       "productSupplier",
-      {...productSupplierData, fkUser: userId},
+      {...productSupplierData, fkCompany: req.accessToken.companyId},
       "L'association entre le produit et le fournisseur n'existe pas"
     );
 

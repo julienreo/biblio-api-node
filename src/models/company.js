@@ -2,16 +2,16 @@ const appRoot = require("app-root-path");
 
 const Resource = require(`${appRoot}/src/models/resource`);
 
-class Supplier extends Resource {
+class Company extends Resource {
   /**
    * @param {Object} data
    */
   constructor(data) {
-    super(["name", "website", "notes", "fkCompany"], data);
+    super(["name"], data);
     Object.freeze(this);
   }
 }
 
-Supplier.table = "supplier";
+Company.table = "company";
 
-module.exports = Supplier;
+module.exports = Company;

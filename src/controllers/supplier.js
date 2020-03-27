@@ -7,13 +7,13 @@ const {NotFoundError} = require(`${appRoot}/src/modules/errors/resource`);
 const {InsertionError, RemovalError} = require(`${appRoot}/src/modules/errors/database`);
 const logger = require(`${appRoot}/lib/logger`);
 
-const find = async (req, res, next) => {
+const fetchOne = async (req, res, next) => {
   try {
     const {supplierId} = req.params;
 
     const supplier = await resourceService.retrieveOne(
       "supplier",
-      {id: supplierId, fkUser: req.accessToken.id},
+      {id: supplierId, fkCompany: req.accessToken.companyId},
       "Le fournisseur n'existe pas"
     );
 
@@ -28,13 +28,31 @@ const find = async (req, res, next) => {
   }
 };
 
+const fetchAll = async (req, res, next) => {
+  try {
+    const suppliers = await resourceService.retrieveAll(
+      "supplier",
+      {fkCompany: req.accessToken.companyId}
+    );
+
+    logger.info({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id});
+    res.send({suppliers});
+  } catch (e) {
+    if (e instanceof NotFoundError) {
+      logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id, error: e});
+      return res.status(e.status).send({error: e.getMessage()});
+    }
+    return next(e);
+  }
+};
+
 const create = async (req, res, next) => {
   try {
     const supplierData = req.body;
     const {productId} = req.params;
-    const userId = req.accessToken.id;
+    const {companyId} = req.accessToken;
 
-    supplierData.fkUser = userId;
+    supplierData.fkCompany = companyId;
 
     await databaseService.makeTransaction(async (connection) => {
       const supplierId = await resourceService.insertOne(
@@ -45,10 +63,10 @@ const create = async (req, res, next) => {
       );
 
       if (productId) {
-        // A product might not be retrieved in case it doesn't exist or doesn't belong to the user
+        // A product might not be retrieved in case it doesn't exist or doesn't belong to the company
         await resourceService.retrieveOne(
           "product",
-          {id: productId, fkUser: userId},
+          {id: productId, fkCompany: companyId},
           "Le produit n'existe pas",
           {connection}
         );
@@ -56,7 +74,7 @@ const create = async (req, res, next) => {
         // Create an association between a product and a supplier
         await resourceService.insertOne(
           "productSupplier",
-          {fkProduct: productId, fkSupplier: supplierId, fkUser: userId},
+          {fkProduct: productId, fkSupplier: supplierId, fkCompany: companyId},
           "L'association entre le produit et le fournisseur existe déjà",
           {connection}
         );
@@ -77,13 +95,11 @@ const create = async (req, res, next) => {
 const update = async (req, res, next) => {
   try {
     const supplierData = req.body;
-    const {supplierId} = req.params;
-    const userId = req.accessToken.id;
 
     await resourceService.updateOne(
       "supplier",
       {...supplierData},
-      {id: supplierId, fkUser: userId},
+      {id: req.params.supplierId, fkCompany: req.accessToken.companyId},
       {notFound: "Le fournisseur n'existe pas", alreadyExists: "Un fournisseur avec les mêmes caractéristiques existe déjà"}
     );
 
@@ -100,11 +116,9 @@ const update = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
   try {
-    const {supplierId} = req.params;
-
     await resourceService.removeOne(
       "supplier",
-      {id: supplierId, fkUser: req.accessToken.id},
+      {id: req.params.supplierId, fkCompany: req.accessToken.companyId},
       "Le fournisseur n'existe pas"
     );
 
@@ -125,7 +139,8 @@ const remove = async (req, res, next) => {
 };
 
 module.exports = {
-  find,
+  fetchOne,
+  fetchAll,
   create,
   update,
   remove

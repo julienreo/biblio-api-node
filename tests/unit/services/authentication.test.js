@@ -7,11 +7,11 @@ const jwt = require("jsonwebtoken");
 const authenticationService = require(`${appRoot}/src/services/authentication`);
 
 describe("getAccessToken", () => {
-  before(() => sandbox.stub(jwt, "sign").returns("JWT"));
-  after(() => sandbox.restore());
+  beforeEach(() => sandbox.stub(jwt, "sign").returns("JWT"));
+  afterEach(() => sandbox.restore());
 
   it("should return a JWT", async () => {
-    const result = await authenticationService.getAccessToken(1);
+    const result = await authenticationService.getAccessToken(1, 1);
     expect(result).to.not.be.undefined;
     expect(result).to.be.a("string");
   });
