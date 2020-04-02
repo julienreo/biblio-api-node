@@ -1,0 +1,218 @@
+---
+- hosts: all
+
+  become: yes
+
+  vars:
+    user: vagrant
+    group: vagrant
+    api_name: biblio
+    docker_private_repo_pwd: ##########
+    redis_bind: "0.0.0.0"
+
+  roles:
+    - redis
+    - java
+    - jenkins
+
+  tasks:
+    # Update APT cache
+    - name: Update APT cache
+      apt:
+        update_cache: yes
+
+
+    # Install utilities
+    - name: Install utilities
+      apt:
+        name:
+          - htop
+          - software-properties-common
+          - aptitude
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: latest
+
+
+    # Install and configure Apache2
+    - name: Install apache2
+      apt:
+        name: apache2
+        state: latest
+
+    - name: Enable apache2 rewrite module
+      apache2_module:
+        state: present
+        name: rewrite
+
+    - name: Enable apache2 headers module
+      apache2_module:
+        state: present
+        name: headers
+
+    - name: Enable apache2 proxy module
+      apache2_module:
+        state: present
+        name: proxy
+
+    - name: Enable apache2 proxy_http module
+      apache2_module:
+        state: present
+        name: proxy_http
+
+    - name: Create VHOST
+      copy:
+        src: vhost.conf
+        dest: /etc/apache2/sites-available/{{ api_name }}.conf
+
+    - name: Enable newly created VHOST
+      command: a2ensite {{ api_name }}.conf
+
+    - name: Disable default VHOST
+      command: a2dissite 000-default.conf
+
+    - name: Set user for apache2
+      lineinfile:
+        name: /etc/apache2/envvars
+        regexp: "^export APACHE_RUN_USER="
+        line: "export APACHE_RUN_USER={{ user }}"
+
+    - name: Set group for apache2
+      lineinfile:
+        name: /etc/apache2/envvars
+        regexp: "^export APACHE_RUN_GROUP="
+        line: "export APACHE_RUN_GROUP={{ group }}"
+
+    - name: Enable and restart apache2 service
+      service:
+        name: apache2
+        state: restarted
+        enabled: yes
+
+
+    # Install Node.js
+    - name: Add NodeSource package signing key
+      apt_key:
+        url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+        state: present
+
+    - name: Add NodeSource repository
+      apt_repository:
+        repo: deb https://deb.nodesource.com/node_12.x xenial main
+        state: present
+        update_cache: yes
+
+    - name: Install nodejs
+      apt:
+        name: nodejs
+        state: latest
+
+
+    # Install MariaDB
+    - name: Add MariaDB package signing key
+      apt_key:
+        url: http://mariadb.org/mariadb_release_signing_key.asc
+        state: present
+
+    - name: Add MariaDB repository
+      apt_repository:
+        repo: deb http://mirrors.piconets.webwerks.in/mariadb-mirror/repo/10.4/ubuntu xenial main
+        state: present
+        update_cache: yes
+
+    - name: Install MariaDB
+      apt:
+        name: mariadb-server
+        state: present
+
+    - name: Bind MariaDB on all interfaces
+      lineinfile:
+        name: /etc/mysql/my.cnf
+        regexp: "^bind-address"
+        line: "bind-address		= 0.0.0.0"
+
+    - name: Enable and restart MariaDB service
+      service:
+        name: mariadb
+        state: restarted
+        enabled: yes
+
+
+    # Install Docker
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: APT - Add Docker repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+        update_cache: yes
+        filename: docker
+
+    - name: install docker-ce
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Install Docker Module for Python
+      pip:
+        name:
+          - docker
+
+
+    # Pull app image
+    - name: Log into DockerHub private registry
+      docker_login:
+        registry: https://index.docker.io/v2/##########
+        username: ##########
+        password: "{{ docker_private_repo_pwd }}"
+        reauthorize: yes
+
+    - name: Pull biblio image
+      docker_image:
+        name: ##########
+        source: pull
+
+    - name: Pull biblio-tests image
+      docker_image:
+        name: ##########
+        source: pull
+
+    - name: Log out of DockerHub
+      docker_login:
+        state: absent
+
+
+    # Manage app
+    - name: Create app container and mount a volume
+      docker_container:
+        user:
+        restart_policy: unless-stopped
+        name: biblio
+        image: ##########
+        env:
+          REDIS_HOST: "192.168.33.90"
+          REDIS_PORT: "6379"
+          MARIADB_HOST: "192.168.33.90"
+          MARIADB_PORT: "3306"
+          MARIADB_USER: root
+          MARIADB_PASSWORD: ##########
+          MARIADB_DATABASE: biblio_dev
+        volumes:
+          - /home/vagrant/biblio/logs:/app/storage/logs
+        ports:
+          - "3000:3000"
+
+    - name: Change app log directory ownership
+      file:
+        path: /home/vagrant/biblio
+        recurse: yes
+        owner: vagrant
+        group: vagrant
