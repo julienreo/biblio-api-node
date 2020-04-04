@@ -8,6 +8,7 @@
 - [CACHING](#caching)
 - [TOOLS](#tools)
 - [TESTING](#testing)
+- [CI - CD](#ci---cd)
 - [AUTOMATION](#automation)
 - [CODE QUALITY](#code-quality)
 - [ROUTES](#routes)
@@ -63,6 +64,11 @@ The API exposes [routes](#routes) to handle standard **CRUD** operations:
 **Integration Tests** are used to test API's routes.
 
 
+## CI - CD
+
+**Jenkins** is used as a **continuous integration** and **continuous deployment** tool to manage the **integration testing** process and handle the **deployment** of the application.
+
+
 ## AUTOMATION
 
 **Docker** is used to **build**, **test** and **run** the application.
@@ -70,8 +76,6 @@ The API exposes [routes](#routes) to handle standard **CRUD** operations:
 **Vagrant** is used to **create locally** a development environment that **reproduces** the production environment.
 
 **Ansible** is used to **provision**, **configure** and **manage** the local and production environments.
-
-**Jenkins** is used as a **continuous integration** tool to automate the **integration testing** process.
 
 
 ## CODE QUALITY
