@@ -9,7 +9,7 @@
 - [TOOLS](#tools)
 - [TESTING](#testing)
 - [CI - CD](#ci---cd)
-- [AUTOMATION](#automation)
+- [OPS](#ops)
 - [CODE QUALITY](#code-quality)
 - [ROUTES](#routes)
     + [Users](#users)
@@ -69,7 +69,7 @@ The API exposes [routes](#routes) to handle standard **CRUD** operations:
 **Jenkins** is used as a **continuous integration** and **continuous deployment** tool to manage the **integration testing** process and handle the **deployment** of the application.
 
 
-## AUTOMATION
+## OPS
 
 **Docker** is used to **build**, **test** and **run** the application.
 
