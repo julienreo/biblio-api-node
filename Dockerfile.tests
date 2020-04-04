@@ -1,4 +1,4 @@
-FROM jubdx/biblio:1.0
+FROM jubdx/biblio
 
 RUN npm install -g mocha
 

@@ -7,7 +7,7 @@
     user: vagrant
     group: vagrant
     api_name: biblio
-    docker_private_repo_pwd: ##########
+    docker_repo_pwd: ##########
     redis_bind: "0.0.0.0"
 
   roles:
@@ -172,7 +172,7 @@
       docker_login:
         registry: https://index.docker.io/v2/##########
         username: ##########
-        password: "{{ docker_private_repo_pwd }}"
+        password: "{{ docker_repo_pwd }}"
         reauthorize: yes
 
     - name: Pull biblio image
