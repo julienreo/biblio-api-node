@@ -3,7 +3,13 @@ const redis = require("redis");
 
 const config = require(`${appRoot}/src/config`);
 const logger = require(`${appRoot}/lib/logger`);
-const cacheErrors = require(`${appRoot}/src/modules/errors/cache`);
+const {
+  CacheConnectionError,
+  CacheGetError,
+  CacheSetError,
+  CacheDeleteError,
+  CacheDeleteAllError
+} = require(`${appRoot}/src/modules/errors`);
 
 class Cache {
   constructor() {
@@ -13,7 +19,7 @@ class Cache {
     });
 
     this.redisClient.on("error", (e) => {
-      const error = new cacheErrors.CacheConnectionError(e.message);
+      const error = new CacheConnectionError(e.message);
       logger.error({error: error.getMessage()});
       throw error;
     });
@@ -31,7 +37,7 @@ class Cache {
     return new Promise((resolve, reject) => {
       this.redisClient.get(key, (e, res) => {
         if (e) {
-          const error = new cacheErrors.CacheGetError(e.message);
+          const error = new CacheGetError(e.message);
           logger.error({error: error.getMessage()});
           reject(error);
         }
@@ -51,7 +57,7 @@ class Cache {
     return new Promise((resolve, reject) => {
       this.redisClient.set(key, value, (e) => {
         if (e) {
-          const error = new cacheErrors.CacheSetError(e.message);
+          const error = new CacheSetError(e.message);
           logger.error({error: error.getMessage()});
           reject(error);
         }
@@ -70,7 +76,7 @@ class Cache {
     return new Promise((resolve, reject) => {
       this.redisClient.del(key, (e) => {
         if (e) {
-          const error = new cacheErrors.CacheDeleteError(e.message);
+          const error = new CacheDeleteError(e.message);
           logger.error({error: error.getMessage()});
           reject(error);
         }
@@ -83,7 +89,7 @@ class Cache {
     return new Promise((resolve, reject) => {
       this.redisClient.flushall((e) => {
         if (e) {
-          const error = new cacheErrors.CacheDeleteAllError(e.message);
+          const error = new CacheDeleteAllError(e.message);
           logger.error({error: error.getMessage()});
           reject(error);
         }

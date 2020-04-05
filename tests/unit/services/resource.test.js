@@ -10,9 +10,7 @@ const Product = require(`${appRoot}/src/models/product`);
 const Supplier = require(`${appRoot}/src/models/supplier`);
 const ProductSupplier = require(`${appRoot}/src/models/product-supplier`);
 const Resource = require(`${appRoot}/src/models/resource`);
-const ApiError = require(`${appRoot}/src/modules/errors/api`);
-const {NotFoundError} = require(`${appRoot}/src/modules/errors/resource`);
-const {InsertionError} = require(`${appRoot}/src/modules/errors/database`);
+const {ApiError, NotFoundError, InsertionError} = require(`${appRoot}/src/modules/errors`);
 const {_Cache} = require(`${appRoot}/src/modules/cache`);
 
 describe("retrieveAll", () => {

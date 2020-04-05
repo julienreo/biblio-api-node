@@ -1,8 +1,7 @@
 const appRoot = require("app-root-path");
 
 const resourceService = require(`${appRoot}/src/services/resource`);
-const {NotFoundError} = require(`${appRoot}/src/modules/errors/resource`);
-const {InsertionError} = require(`${appRoot}/src/modules/errors/database`);
+const {NotFoundError, InsertionError} = require(`${appRoot}/src/modules/errors`);
 const databaseService = require(`${appRoot}/src/services/database`);
 const logger = require(`${appRoot}/lib/logger`);
 

@@ -3,8 +3,7 @@ const appRoot = require("app-root-path");
 const databaseService = require(`${appRoot}/src/services/database`);
 const {dbErrorCodes} = require(`${appRoot}/src/config/constants`);
 const resourceService = require(`${appRoot}/src/services/resource`);
-const {NotFoundError} = require(`${appRoot}/src/modules/errors/resource`);
-const {InsertionError, RemovalError} = require(`${appRoot}/src/modules/errors/database`);
+const {NotFoundError, InsertionError, RemovalError} = require(`${appRoot}/src/modules/errors`);
 const logger = require(`${appRoot}/lib/logger`);
 
 const fetchOne = async (req, res, next) => {

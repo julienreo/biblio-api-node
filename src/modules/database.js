@@ -2,7 +2,7 @@ const appRoot = require("app-root-path");
 const mysql = require("mysql2/promise");
 
 const config = require(`${appRoot}/src/config`);
-const {FormatQueryError, CloseConnectionsError} = require(`${appRoot}/src/modules/errors/database`);
+const {FormatQueryError, CloseConnectionsError} = require(`${appRoot}/src/modules/errors`);
 const logger = require(`${appRoot}/lib/logger`);
 
 /**

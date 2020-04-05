@@ -4,9 +4,7 @@ const Ajv = require("ajv");
 const ajv = new Ajv({allErrors: true, jsonPointer: true});
 require("ajv-errors")(ajv);
 
-const {ValidationError} = require(`${appRoot}/src/modules/errors/resource`);
-const {QueryParamError} = require(`${appRoot}/src/modules/errors/request`);
-const ApiError = require(`${appRoot}/src/modules/errors/api`);
+const {ApiError, ValidationError, QueryParamError} = require(`${appRoot}/src/modules/errors`);
 const productSchema = require(`${appRoot}/src/middleware/validator/schemas/product`);
 const supplierSchema = require(`${appRoot}/src/middleware/validator/schemas/supplier`);
 const userDetailsSchema = require(`${appRoot}/src/middleware/validator/schemas/user-details`);

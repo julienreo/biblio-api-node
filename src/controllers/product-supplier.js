@@ -2,8 +2,7 @@ const appRoot = require("app-root-path");
 
 const {dbErrorCodes} = require(`${appRoot}/src/config/constants`);
 const resourceService = require(`${appRoot}/src/services/resource`);
-const {NotFoundError, ResourceError} = require(`${appRoot}/src/modules/errors/resource`);
-const {InsertionError} = require(`${appRoot}/src/modules/errors/database`);
+const {InsertionError, ResourceError, NotFoundError} = require(`${appRoot}/src/modules/errors`);
 const logger = require(`${appRoot}/lib/logger`);
 
 const create = async (req, res, next) => {

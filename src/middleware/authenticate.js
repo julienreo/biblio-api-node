@@ -2,7 +2,7 @@ const appRoot = require("app-root-path");
 
 const jwt = require("jsonwebtoken");
 
-const {MissingTokenError, InvalidTokenError} = require(`${appRoot}/src/modules/errors/authentication`);
+const {MissingTokenError, InvalidTokenError} = require(`${appRoot}/src/modules/errors`);
 const config = require(`${appRoot}/src/config`);
 
 const authenticate = (req, res, next) => {

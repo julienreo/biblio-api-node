@@ -1,7 +1,7 @@
 const appRoot = require("app-root-path");
 const bcrypt = require("bcryptjs");
 
-const {ValidationError} = require(`${appRoot}/src/modules/errors/resource`);
+const {ValidationError} = require(`${appRoot}/src/modules/errors`);
 
 /**
  * @param {string} suppliedPassword

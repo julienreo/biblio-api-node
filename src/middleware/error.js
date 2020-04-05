@@ -1,7 +1,7 @@
 const appRoot = require("app-root-path");
 
 const {statusCodes} = require(`${appRoot}/src/config/constants`);
-const {NotFoundError} = require(`${appRoot}/src/modules/errors/resource`);
+const {NotFoundError} = require(`${appRoot}/src/modules/errors`);
 const logger = require(`${appRoot}/lib/logger`);
 
 const notFound = (req, res) => {

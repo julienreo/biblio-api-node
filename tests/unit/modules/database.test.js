@@ -5,7 +5,7 @@ const sinon = require("sinon");
 const sandbox = sinon.createSandbox();
 
 const {databaseClient, formatQuery} = require(`${appRoot}/src/modules/database`);
-const {FormatQueryError} = require(`${appRoot}/src/modules/errors/database`);
+const {FormatQueryError} = require(`${appRoot}/src/modules/errors`);
 const {PromisePool} = require(`${appRoot}/node_modules/mysql2/promise`);
 
 describe("formatQuery", () => {

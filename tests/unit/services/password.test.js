@@ -5,7 +5,7 @@ const {expect} = require("chai");
 const sandbox = require("sinon").createSandbox();
 
 const passwordService = require(`${appRoot}/src/services/password`);
-const {ValidationError} = require(`${appRoot}/src/modules/errors/resource`);
+const {ValidationError} = require(`${appRoot}/src/modules/errors`);
 
 describe("comparePassword", () => {
   beforeEach(() => sandbox.stub(bcrypt, "compare").returns(false));

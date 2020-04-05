@@ -4,8 +4,7 @@ const config = require(`${appRoot}/src/config`);
 const resourceService = require(`${appRoot}/src/services/resource`);
 const passwordService = require(`${appRoot}/src/services/password`);
 const authenticationService = require(`${appRoot}/src/services/authentication`);
-const {NotFoundError, ValidationError} = require(`${appRoot}/src/modules/errors/resource`);
-const {InsertionError} = require(`${appRoot}/src/modules/errors/database`);
+const {NotFoundError, ValidationError, InsertionError} = require(`${appRoot}/src/modules/errors`);
 const logger = require(`${appRoot}/lib/logger`);
 
 const login = async (req, res, next) => {
