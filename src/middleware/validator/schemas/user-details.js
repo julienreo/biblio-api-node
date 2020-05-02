@@ -28,9 +28,9 @@ module.exports = {
   },
   errorMessage: {
     required: {
-      email: "L'email est manquant",
-      password: "Le mot de passe est manquant"
+      email: "Email : champ obligatoire",
+      password: "Mot de passe : champ obligatoire"
     },
-    additionalProperties: "Aucn autre champ n'est autorisé"
+    additionalProperties: "Nombre de champs invalides"
   }
 };

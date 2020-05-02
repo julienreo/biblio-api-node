@@ -1,5 +1,6 @@
 module.exports = {
   statusCodes: {
+    success: 200,
     internalServerError: 500
   },
   dbErrorCodes: {

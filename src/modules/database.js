@@ -75,7 +75,7 @@ class Database {
       logger.info("Database connections closed successfully");
     } catch (e) {
       const error = new CloseConnectionsError(e.message);
-      logger.error({error: error.getMessage()});
+      logger.error({errors: [error.message]});
       throw error;
     }
   }

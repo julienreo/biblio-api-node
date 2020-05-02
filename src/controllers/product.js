@@ -1,7 +1,6 @@
 const appRoot = require("app-root-path");
 
 const resourceService = require(`${appRoot}/src/services/resource`);
-const {NotFoundError, InsertionError} = require(`${appRoot}/src/modules/errors`);
 const databaseService = require(`${appRoot}/src/services/database`);
 const logger = require(`${appRoot}/lib/logger`);
 
@@ -16,10 +15,6 @@ const fetchOne = async (req, res, next) => {
     logger.info({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id});
     res.send({product});
   } catch (e) {
-    if (e instanceof NotFoundError) {
-      logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id, error: e});
-      return res.status(e.status).send({error: e.getMessage()});
-    }
     return next(e);
   }
 };
@@ -34,10 +29,6 @@ const fetchAll = async (req, res, next) => {
     logger.info({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id});
     res.send({products});
   } catch (e) {
-    if (e instanceof NotFoundError) {
-      logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id, error: e});
-      return res.status(e.status).send({error: e.getMessage()});
-    }
     return next(e);
   }
 };
@@ -63,7 +54,7 @@ const create = async (req, res, next) => {
         await resourceService.retrieveOne(
           "supplier",
           {id: supplierId, fkCompany: companyId},
-          "Le fournisseur n'existe pas",
+          "Le fournisseur associé au produit n'existe pas",
           {connection}
         );
 
@@ -75,15 +66,11 @@ const create = async (req, res, next) => {
           {connection}
         );
       }
-    });
 
-    logger.info({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id});
-    res.send({success: true, message: "Le produit a été créé avec succès"});
+      logger.info({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id});
+      res.send({success: true, message: "Le produit a été créé avec succès", productId});
+    });
   } catch (e) {
-    if (e instanceof InsertionError) {
-      logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id, error: e});
-      return res.status(e.status).send({error: e.getMessage()});
-    }
     return next(e);
   }
 };
@@ -102,14 +89,6 @@ const update = async (req, res, next) => {
     logger.info({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id});
     res.send({success: true, message: "Le produit a été mis à jour avec succès"});
   } catch (e) {
-    if (e instanceof NotFoundError) {
-      logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id, error: e});
-      return res.status(e.status).send({error: e.getMessage()});
-    }
-    if (e instanceof InsertionError) {
-      logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id, error: e});
-      return res.status(e.status).send({error: e.getMessage()});
-    }
     return next(e);
   }
 };
@@ -140,10 +119,6 @@ const remove = async (req, res, next) => {
     logger.info({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id});
     res.send({success: true, message: "Le produit a été supprimé avec succès"});
   } catch (e) {
-    if (e instanceof NotFoundError) {
-      logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id, error: e});
-      return res.status(e.status).send({error: e.getMessage()});
-    }
     return next(e);
   }
 };

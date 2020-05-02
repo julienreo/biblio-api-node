@@ -43,7 +43,7 @@ describe("products", () => {
         });
     });
 
-    it("should return an error object if no product is matching the provided ID", (done) => {
+    it("should return an error if no product is matching the provided ID", (done) => {
       chai
         .request(app)
         .get("/products/4")
@@ -52,10 +52,9 @@ describe("products", () => {
           expect(err).to.be.null;
           expect(res).to.have.status(404);
           expect(res.body).to.deep.equal({
-            error: {
-              name: "NotFoundError",
-              message: "Le produit n'existe pas"
-            }
+            errors: [
+              "Le produit n'existe pas"
+            ]
           });
           done();
         });
@@ -73,7 +72,9 @@ describe("products", () => {
           expect(err).to.be.null;
           expect(res).to.have.status(401);
           expect(res.body).to.deep.equal({
-            error: "Token invalide"
+            errors: [
+              "Token invalide"
+            ]
           });
           done();
         });
@@ -97,7 +98,54 @@ describe("products", () => {
           expect(res).to.have.status(200);
           expect(res.body).to.deep.equal({
             success: true,
-            message: "Le produit a été créé avec succès"
+            message: "Le produit a été créé avec succès",
+            productId: 3
+          });
+          done();
+        });
+    });
+
+    it("should create a product associated with a supplier and return a success message", (done) => {
+      const newProduct = {name: "insert fileté 4", notes: "notes"};
+
+      chai
+        .request(app)
+        .post("/suppliers/1/products")
+        .set({
+          "access-token": accessToken,
+          "Content-Type": "application/json"
+        })
+        .send(newProduct)
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(200);
+          expect(res.body).to.deep.equal({
+            success: true,
+            message: "Le produit a été créé avec succès",
+            productId: 4
+          });
+          done();
+        });
+    });
+
+    it("should return an error if the supplier associated with the product doesn't exist", (done) => {
+      const newProduct = {name: "insert fileté 5", notes: "notes"};
+
+      chai
+        .request(app)
+        .post("/suppliers/10/products")
+        .set({
+          "access-token": accessToken,
+          "Content-Type": "application/json"
+        })
+        .send(newProduct)
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(404);
+          expect(res.body).to.deep.equal({
+            errors: [
+              "Le fournisseur associé au produit n'existe pas"
+            ]
           });
           done();
         });
@@ -127,7 +175,7 @@ describe("products", () => {
         });
     });
 
-    it("should return an error object if no product is matching the provided ID", (done) => {
+    it("should return an error if no product is matching the provided ID", (done) => {
       chai
         .request(app)
         .put("/products/5")
@@ -137,10 +185,9 @@ describe("products", () => {
           expect(err).to.be.null;
           expect(res).to.have.status(404);
           expect(res.body).to.deep.equal({
-            error: {
-              name: "NotFoundError",
-              message: "Le produit n'existe pas"
-            }
+            errors: [
+              "Le produit n'existe pas"
+            ]
           });
           done();
         });
@@ -164,7 +211,7 @@ describe("products", () => {
         });
     });
 
-    it("should return an error object if no product is matching the provided ID", (done) => {
+    it("should return an error if no product is matching the provided ID", (done) => {
       chai
         .request(app)
         .delete("/products/5")
@@ -173,10 +220,9 @@ describe("products", () => {
           expect(err).to.be.null;
           expect(res).to.have.status(404);
           expect(res.body).to.deep.equal({
-            error: {
-              name: "NotFoundError",
-              message: "Le produit n'existe pas"
-            }
+            errors: [
+              "Le produit n'existe pas"
+            ]
           });
           done();
         });

@@ -48,10 +48,10 @@ module.exports = {
   },
   errorMessage: {
     required: {
-      firstname: "Le prénom est manquant",
-      lastname: "Le nom est manquant",
-      email: "L'email est manquant",
-      password: "Le mot de passe est manquant"
+      firstname: "Prénom : champ obligatoire",
+      lastname: "Nom : champ obligatoire",
+      email: "Email : champ obligatoire",
+      password: "Mot de passe : champ obligatoire"
     },
     additionalProperties: "Nombre de champs invalides"
   }

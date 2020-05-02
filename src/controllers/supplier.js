@@ -3,7 +3,7 @@ const appRoot = require("app-root-path");
 const databaseService = require(`${appRoot}/src/services/database`);
 const {dbErrorCodes} = require(`${appRoot}/src/config/constants`);
 const resourceService = require(`${appRoot}/src/services/resource`);
-const {NotFoundError, InsertionError, RemovalError} = require(`${appRoot}/src/modules/errors`);
+const {RemovalError} = require(`${appRoot}/src/modules/errors`);
 const logger = require(`${appRoot}/lib/logger`);
 
 const fetchOne = async (req, res, next) => {
@@ -19,10 +19,6 @@ const fetchOne = async (req, res, next) => {
     logger.info({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id});
     res.send({supplier});
   } catch (e) {
-    if (e instanceof NotFoundError) {
-      logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id, error: e});
-      return res.status(e.status).send({error: e.getMessage()});
-    }
     return next(e);
   }
 };
@@ -37,10 +33,6 @@ const fetchAll = async (req, res, next) => {
     logger.info({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id});
     res.send({suppliers});
   } catch (e) {
-    if (e instanceof NotFoundError) {
-      logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id, error: e});
-      return res.status(e.status).send({error: e.getMessage()});
-    }
     return next(e);
   }
 };
@@ -66,7 +58,7 @@ const create = async (req, res, next) => {
         await resourceService.retrieveOne(
           "product",
           {id: productId, fkCompany: companyId},
-          "Le produit n'existe pas",
+          "Le produit associé au fournisseur n'existe pas",
           {connection}
         );
 
@@ -78,15 +70,11 @@ const create = async (req, res, next) => {
           {connection}
         );
       }
-    });
 
-    logger.info({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id});
-    res.send({success: true, message: "Le fournisseur a été créé avec succès"});
+      logger.info({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id});
+      res.send({success: true, message: "Le fournisseur a été créé avec succès", supplierId});
+    });
   } catch (e) {
-    if (e instanceof InsertionError || e instanceof NotFoundError) {
-      logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id, error: e});
-      return res.status(e.status).send({error: e.getMessage()});
-    }
     return next(e);
   }
 };
@@ -105,10 +93,6 @@ const update = async (req, res, next) => {
     logger.info({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id});
     res.send({success: true, message: "Le fournisseur a été mis à jour avec succès"});
   } catch (e) {
-    if (e instanceof NotFoundError) {
-      logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id, error: e});
-      return res.status(e.status).send({error: e.getMessage()});
-    }
     return next(e);
   }
 };
@@ -124,14 +108,8 @@ const remove = async (req, res, next) => {
     logger.info({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id});
     res.send({success: true, message: "Le fournisseur a été supprimé avec succès"});
   } catch (e) {
-    if (e instanceof NotFoundError) {
-      logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id, error: e});
-      return res.status(e.status).send({error: e.getMessage()});
-    }
     if (typeof e.errno !== "undefined" && e.errno === dbErrorCodes.foreignKeyConstraintDeleteError) {
-      const error = new RemovalError("Des produits sont associés à ce fournisseur");
-      logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userId: req.accessToken.id, error});
-      return res.status(error.status).send({error: error.getMessage()});
+      return next(new RemovalError("Des produits sont associés à ce fournisseur"));
     }
     return next(e);
   }

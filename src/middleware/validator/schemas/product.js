@@ -17,14 +17,14 @@ module.exports = {
       type: "string",
       maxLength: 10000,
       errorMessage: {
-        type: "Notes : format invalide",
-        maxLength: "Notes : 10 000 caractères maximum autorisés"
+        type: "Description produit : format invalide",
+        maxLength: "Description produit : 10 000 caractères maximum autorisés"
       }
     }
   },
   errorMessage: {
     required: {
-      name: "Le nom est manquant"
+      name: "Produit : champ obligatoire"
     },
     additionalProperties: "Nombre de champs invalides"
   }

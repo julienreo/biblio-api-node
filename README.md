@@ -166,6 +166,21 @@ Body:
 }
 ```
 
+``` 
+Description: Create product and associate it to a supplier
+
+Route: POST /suppliers/:supplierId/products
+
+Headers:
+access-token: ...
+
+Body:
+{
+    "name": "insert fileté RS PRO M5",
+    "notes": "Laiton, fixation Ø 6.4mm, L 9.35mm"
+}
+```
+
 ```
 Description: Delete product
 
@@ -215,6 +230,22 @@ Body:
 Description: Create supplier
 
 Route: POST /suppliers
+
+Headers:
+access-token: ...
+
+Body:
+{
+    "name": "rs-online",
+    "website": "https://fr.rs-online.com",
+    "notes": "Bon rapport qualité/prix de manière générale"
+}
+```
+
+``` 
+Description: Create supplier and associate it to a product
+
+Route: POST /products/:productId/suppliers
 
 Headers:
 access-token: ...

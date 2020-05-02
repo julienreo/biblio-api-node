@@ -10,7 +10,6 @@ const supplierSchema = require(`${appRoot}/src/middleware/validator/schemas/supp
 const userDetailsSchema = require(`${appRoot}/src/middleware/validator/schemas/user-details`);
 const userSchema = require(`${appRoot}/src/middleware/validator/schemas/user`);
 const productSupplierSchema = require(`${appRoot}/src/middleware/validator/schemas/product-supplier`);
-const logger = require(`${appRoot}/lib/logger`);
 
 const resourceSchemaMapping = {
   user: userSchema,
@@ -44,10 +43,7 @@ const validateResource = (resourceName) => {
 
     if (validate.errors) {
       const errorsMessages = validate.errors.map((error) => error.message);
-      const error = new ValidationError("La validation a echoué", errorsMessages);
-      const userId = typeof req.accessToken === "undefined" ? req.accessToken : req.accessToken.id;
-      logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userId, error});
-      return res.status(error.status).send({error: error.getMessage()});
+      return next(new ValidationError(errorsMessages[0]));
     }
 
     return next();
@@ -68,10 +64,7 @@ const validateParam = (paramName, typeName) => {
 
     if (typeName === "number") {
       if (!param.match(/^[0-9]+$/u)) {
-        const error = new QueryParamError("Paramètre invalide");
-        const userId = typeof req.accessToken === "undefined" ? req.accessToken : req.accessToken.id;
-        logger.error({ip: req.ip, path: req.originalUrl, method: req.method, userId, error});
-        return res.status(error.status).send({error: error.getMessage()});
+        return next(new QueryParamError("Paramètre invalide"));
       }
     } else {
       return next(new ApiError("Invalid type name"));

@@ -20,7 +20,7 @@ class Cache {
 
     this.redisClient.on("error", (e) => {
       const error = new CacheConnectionError(e.message);
-      logger.error({error: error.getMessage()});
+      logger.error({errors: [error.message]});
       throw error;
     });
 
@@ -38,7 +38,7 @@ class Cache {
       this.redisClient.get(key, (e, res) => {
         if (e) {
           const error = new CacheGetError(e.message);
-          logger.error({error: error.getMessage()});
+          logger.error({errors: [error.message]});
           reject(error);
         }
         resolve(JSON.parse(res));
@@ -58,7 +58,7 @@ class Cache {
       this.redisClient.set(key, value, (e) => {
         if (e) {
           const error = new CacheSetError(e.message);
-          logger.error({error: error.getMessage()});
+          logger.error({errors: [error.message]});
           reject(error);
         }
         resolve();
@@ -77,7 +77,7 @@ class Cache {
       this.redisClient.del(key, (e) => {
         if (e) {
           const error = new CacheDeleteError(e.message);
-          logger.error({error: error.getMessage()});
+          logger.error({errors: [error.message]});
           reject(error);
         }
         resolve();
@@ -90,7 +90,7 @@ class Cache {
       this.redisClient.flushall((e) => {
         if (e) {
           const error = new CacheDeleteAllError(e.message);
-          logger.error({error: error.getMessage()});
+          logger.error({errors: [error.message]});
           reject(error);
         }
         resolve();

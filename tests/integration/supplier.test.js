@@ -44,7 +44,7 @@ describe("supplier", () => {
         });
     });
 
-    it("should return an error object if no supplier is matching the provided ID", (done) => {
+    it("should return an error if no supplier is matching the provided ID", (done) => {
       chai
         .request(app)
         .get("/suppliers/4")
@@ -53,10 +53,9 @@ describe("supplier", () => {
           expect(err).to.be.null;
           expect(res).to.have.status(404);
           expect(res.body).to.deep.equal({
-            error: {
-              name: "NotFoundError",
-              message: "Le fournisseur n'existe pas"
-            }
+            errors: [
+              "Le fournisseur n'existe pas"
+            ]
           });
           done();
         });
@@ -74,7 +73,9 @@ describe("supplier", () => {
           expect(err).to.be.null;
           expect(res).to.have.status(401);
           expect(res.body).to.deep.equal({
-            error: "Token invalide"
+            errors: [
+              "Token invalide"
+            ]
           });
           done();
         });
@@ -98,7 +99,54 @@ describe("supplier", () => {
           expect(res).to.have.status(200);
           expect(res.body).to.deep.equal({
             success: true,
-            message: "Le fournisseur a été créé avec succès"
+            message: "Le fournisseur a été créé avec succès",
+            supplierId: 3
+          });
+          done();
+        });
+    });
+
+    it("should create a supplier associated with a product and return a success message", (done) => {
+      const supplier = {name: "rs-online-4", website: "http://supplier.com", notes: "notes"};
+
+      chai
+        .request(app)
+        .post("/products/1/suppliers")
+        .set({
+          "access-token": accessToken,
+          "Content-Type": "application/json"
+        })
+        .send(supplier)
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(200);
+          expect(res.body).to.deep.equal({
+            success: true,
+            message: "Le fournisseur a été créé avec succès",
+            supplierId: 4
+          });
+          done();
+        });
+    });
+
+    it("should return an error if the product associated with the supplier doesn't exist", (done) => {
+      const supplier = {name: "rs-online-5", website: "http://supplier.com", notes: "notes"};
+
+      chai
+        .request(app)
+        .post("/products/10/suppliers")
+        .set({
+          "access-token": accessToken,
+          "Content-Type": "application/json"
+        })
+        .send(supplier)
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(404);
+          expect(res.body).to.deep.equal({
+            errors: [
+              "Le produit associé au fournisseur n'existe pas"
+            ]
           });
           done();
         });
@@ -128,7 +176,7 @@ describe("supplier", () => {
         });
     });
 
-    it("should return an error object if no supplier is matching the provided ID", (done) => {
+    it("should return an error if no supplier is matching the provided ID", (done) => {
       chai
         .request(app)
         .put("/suppliers/5")
@@ -138,10 +186,9 @@ describe("supplier", () => {
           expect(err).to.be.null;
           expect(res).to.have.status(404);
           expect(res.body).to.deep.equal({
-            error: {
-              name: "NotFoundError",
-              message: "Le fournisseur n'existe pas"
-            }
+            errors: [
+              "Le fournisseur n'existe pas"
+            ]
           });
           done();
         });
@@ -165,7 +212,7 @@ describe("supplier", () => {
         });
     });
 
-    it("should return an error object if no supplier is matching the provided ID", (done) => {
+    it("should return an error if no supplier is matching the provided ID", (done) => {
       chai
         .request(app)
         .delete("/suppliers/5")
@@ -174,16 +221,15 @@ describe("supplier", () => {
           expect(err).to.be.null;
           expect(res).to.have.status(404);
           expect(res.body).to.deep.equal({
-            error: {
-              name: "NotFoundError",
-              message: "Le fournisseur n'existe pas"
-            }
+            errors: [
+              "Le fournisseur n'existe pas"
+            ]
           });
           done();
         });
     });
 
-    it("should return an error object if products are associated with the supplier to remove", (done) => {
+    it("should return an error if products are associated with the supplier to remove", (done) => {
       chai
         .request(app)
         .delete("/suppliers/1")
@@ -192,10 +238,9 @@ describe("supplier", () => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
           expect(res.body).to.deep.equal({
-            error: {
-              name: "RemovalError",
-              message: "Des produits sont associés à ce fournisseur"
-            }
+            errors: [
+              "Des produits sont associés à ce fournisseur"
+            ]
           });
           done();
         });

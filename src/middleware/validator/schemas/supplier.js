@@ -8,9 +8,9 @@ module.exports = {
       maxLength: 50,
       minLength: 2,
       errorMessage: {
-        type: "Nom : format invalide",
-        maxLength: "Nom : 50 caractères maximum autorisés",
-        minLength: "Nom : 2 caractères minimum autorisés"
+        type: "Fournisseur : format invalide",
+        maxLength: "Fournisseur : 50 caractères maximum autorisés",
+        minLength: "Fournisseur : 2 caractères minimum autorisés"
       }
     },
     website: {
@@ -27,15 +27,15 @@ module.exports = {
       type: "string",
       maxLength: 10000,
       errorMessage: {
-        type: "Notes : format invalide",
-        maxLength: "Notes : 10 000 caractères maximum autorisés"
+        type: "Description fournisseur : format invalide",
+        maxLength: "Description fournisseur : 10 000 caractères maximum autorisés"
       }
     }
   },
   errorMessage: {
     required: {
-      name: "Le nom est manquant",
-      website: "Le site est manquant"
+      name: "Fournisseur : champ obligatoire",
+      website: "Site : champ obligatoire"
     },
     additionalProperties: "Nombre de champs invalides"
   }

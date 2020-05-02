@@ -44,7 +44,7 @@ describe("productSupplier", () => {
         });
     });
 
-    it("should return an error object if the product or the supplier does not exist", (done) => {
+    it("should return an error if the product or the supplier does not exist", (done) => {
       const productSupplier = {fkProduct: 5, fkSupplier: 2, notes: "notes"};
 
       chai
@@ -56,10 +56,49 @@ describe("productSupplier", () => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
           expect(res.body).to.deep.equal({
-            error: {
-              name: "InsertionError",
-              message: "Le produit ou le fournisseur n'existe pas"
-            }
+            errors: [
+              "Le produit ou le fournisseur n'existe pas"
+            ]
+          });
+          done();
+        });
+    });
+
+    it("should return an error if the product doesn't exist", (done) => {
+      const productSupplier = {fkProduct: 55, fkSupplier: 1, notes: "notes"};
+
+      chai
+        .request(app)
+        .post("/productsSuppliers")
+        .set("access-token", accessToken)
+        .send(productSupplier)
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(400);
+          expect(res.body).to.deep.equal({
+            errors: [
+              "Le produit ou le fournisseur n'existe pas"
+            ]
+          });
+          done();
+        });
+    });
+
+    it("should return an error if the supplier doesn't exist", (done) => {
+      const productSupplier = {fkProduct: 5, fkSupplier: 11, notes: "notes"};
+
+      chai
+        .request(app)
+        .post("/productsSuppliers")
+        .set("access-token", accessToken)
+        .send(productSupplier)
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(400);
+          expect(res.body).to.deep.equal({
+            errors: [
+              "Le produit ou le fournisseur n'existe pas"
+            ]
           });
           done();
         });
@@ -78,7 +117,9 @@ describe("productSupplier", () => {
           expect(err).to.be.null;
           expect(res).to.have.status(401);
           expect(res.body).to.deep.equal({
-            error: "Token invalide"
+            errors: [
+              "Token invalide"
+            ]
           });
           done();
         });
@@ -105,7 +146,7 @@ describe("productSupplier", () => {
         });
     });
 
-    it("should return an error object if no associtation exists between a product and a supplier", (done) => {
+    it("should return an error if no associtation exists between a product and a supplier", (done) => {
       const unexistingProductSupplier = {fkProduct: 3, fkSupplier: 1};
 
       chai
@@ -117,10 +158,9 @@ describe("productSupplier", () => {
           expect(err).to.be.null;
           expect(res).to.have.status(404);
           expect(res.body).to.deep.equal({
-            error: {
-              name: "NotFoundError",
-              message: "L'association entre le produit et le fournisseur n'existe pas"
-            }
+            errors: [
+              "L'association entre le produit et le fournisseur n'existe pas"
+            ]
           });
           done();
         });

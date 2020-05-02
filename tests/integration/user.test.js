@@ -45,7 +45,7 @@ describe("users", () => {
         });
     });
 
-    it("should return an error object if the provided email is not found", (done) => {
+    it("should return an error if the provided email is not found", (done) => {
       chai
         .request(app)
         .post("/users/login")
@@ -58,17 +58,16 @@ describe("users", () => {
           expect(err).to.be.null;
           expect(res).to.have.status(404);
           expect(res.body).to.deep.equal({
-            error: {
-              name: "NotFoundError",
-              message: "L'utilisateur n'existe pas"
-            }
+            errors: [
+              "L'utilisateur n'existe pas"
+            ]
           });
           done();
         });
     });
   });
 
-  it("should return an error object if the provided password is wrong", (done) => {
+  it("should return an error if the provided password is wrong", (done) => {
     chai
       .request(app)
       .post("/users/login")
@@ -81,13 +80,9 @@ describe("users", () => {
         expect(err).to.be.null;
         expect(res).to.have.status(400);
         expect(res.body).to.deep.equal({
-          error: {
-            name: "ValidationError",
-            message: "La validation du mot de passe a échoué",
-            errors: [
-              "Mot de passe erroné"
-            ]
-          }
+          errors: [
+            "La validation du mot de passe a échoué"
+          ]
         });
         done();
       });
@@ -121,7 +116,7 @@ describe("users", () => {
         });
     });
 
-    it("should return an error object if the access token is missing", (done) => {
+    it("should return an error if the access token is missing", (done) => {
       chai
         .request(app)
         .post("/users")
@@ -136,7 +131,9 @@ describe("users", () => {
           expect(err).to.be.null;
           expect(res).to.have.status(401);
           expect(res.body).to.deep.equal({
-            error: "Token manquant"
+            errors: [
+              "Token manquant"
+            ]
           });
           done();
         });

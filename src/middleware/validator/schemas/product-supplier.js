@@ -8,9 +8,9 @@ module.exports = {
       maximum: 10000,
       minimum: 1,
       errorMessage: {
-        type: "fkProduct : format invalide",
-        maximum: "maximum : valeur non autorisée",
-        minimum: "minimum : valeur non autorisée"
+        type: "Identifiant produit : format invalide",
+        maximum: "Identifiant produit : valeur non autorisée",
+        minimum: "Identifiant produit : valeur non autorisée"
       }
     },
     fkSupplier: {
@@ -18,24 +18,24 @@ module.exports = {
       maximum: 10000,
       minimum: 1,
       errorMessage: {
-        type: "fkSupplier : format invalide",
-        maximum: "maximum : valeur non autorisée",
-        minimum: "minimum : valeur non autorisée"
+        type: "Identifiant fournisseur : format invalide",
+        maximum: "Identifiant fournisseur : valeur non autorisée",
+        minimum: "Identifiant fournisseur : valeur non autorisée"
       }
     },
     notes: {
       type: "string",
       maxLength: 10000,
       errorMessage: {
-        type: "Notes : format invalide",
-        maxLength: "Notes : 10 000 caractères maximum autorisés"
+        type: "Description association produit / fournisseur : format invalide",
+        maxLength: "Description association produit / fournisseur : 10 000 caractères maximum autorisés"
       }
     }
   },
   errorMessage: {
     required: {
-      fkProduct: "L'ID du produit est manquant",
-      fkSupplier: "L'ID du fournisseur est manquant"
+      fkProduct: "Identifiant produit : champ obligatoire",
+      fkSupplier: "Identifiant fournisseur : champ obligatoire"
     },
     additionalProperties: "Nombre de champs invalides"
   }
