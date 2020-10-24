@@ -21,6 +21,7 @@
 ## PRESENTATION
 
 This is a **REST API** I built using **Node.js** and **Express.js** framework.
+The project has first been developed in **JavaScript** and has then been migrated to **TypeScript**.
 
 This API is the back-end structure of a **Products Library** I created for an **Engineering Office** * whose employees were spending too much time in finding which suppliers were selling the products they needed to buy in order to build their prototypes.
 

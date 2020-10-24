@@ -1,5 +1,0 @@
-FROM jubdx/biblio
-
-RUN npm install -g mocha
-
-CMD ["mocha", "--timeout 10000", "--exit", "./tests/integration/*.test.js", "--reporter", "spec"]

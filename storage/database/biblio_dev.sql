@@ -68,17 +68,40 @@ VALUES
 INSERT INTO product (name, notes, fk_company, creation_date)
 VALUES
     ("insert fileté", "notes", "1", "2019-11-24 00:00:00"),
-    ("insert fileté 2", "notes", "1", "2019-11-24 00:00:00");
+    ("insert fileté 2", "notes", "1", "2019-11-24 00:00:00"),
+    ("insert fileté 3", "notes", "1", "2019-11-24 00:00:00"),
+    ("insert fileté 4", "notes", "1", "2019-11-24 00:00:00"),
+    ("insert fileté 5", "notes", "1", "2019-11-24 00:00:00"),
+    ("insert fileté 6", "notes", "1", "2019-11-24 00:00:00"),
+    ("insert fileté 7", "notes", "1", "2019-11-24 00:00:00"),
+    ("insert fileté 8", "notes", "1", "2019-11-24 00:00:00"),
+    ("insert fileté 9", "notes", "1", "2019-11-24 00:00:00"),
+    ("insert fileté 10", "notes", "1", "2019-11-24 00:00:00"),
+    ("insert fileté 11", "notes", "1", "2019-11-24 00:00:00"),
+    ("insert fileté 12", "notes", "1", "2019-11-24 00:00:00"),
+    ("insert fileté 13", "notes", "1", "2019-11-24 00:00:00");
 
 INSERT INTO supplier (name, website, notes, fk_company, creation_date)
 VALUES
     ("rs-online", "https://fr.rs-online.com", "notes", "1", "2019-11-24 00:00:00"),
-    ("rs-online-2", "https://fr.rs-online-2.com", "notes", "1", "2019-11-24 00:00:00");
+    ("rs-online-2", "https://fr.rs-online-2.com", "notes", "1", "2019-11-24 00:00:00"),
+    ("rs-online-3", "https://fr.rs-online-3.com", "notes", "1", "2019-11-24 00:00:00"),
+    ("rs-online-4", "https://fr.rs-online-3.com", "notes", "1", "2019-11-24 00:00:00");
 
 INSERT INTO at_product_supplier (fk_product, fk_supplier, fk_company, notes)
 VALUES
     ("1", "1", "1", "notes"),
-    ("2", "1", "1", "notes");
+    ("2", "1", "1", "notes"),
+    ("3", "1", "1", "notes"),
+    ("4", "1", "1", "notes"),
+    ("5", "2", "1", "notes"),
+    ("6", "2", "1", "notes"),
+    ("7", "2", "1", "notes"),
+    ("8", "2", "1", "notes"),
+    ("9", "3", "1", "notes"),
+    ("10", "3", "1", "notes"),
+    ("11", "3", "1", "notes"),
+    ("12", "3", "1", "notes");
 
 DELIMITER //
 
@@ -121,7 +144,7 @@ BEGIN
 
     INSERT INTO company (name, creation_date)
     VALUES
-        ("My company", "2019-11-24 00:00:00");
+        ("John Doe Intertainment", "2019-11-24 00:00:00");
 
     INSERT INTO user (firstname, lastname, email, password, fk_company, creation_date)
     VALUES
@@ -130,17 +153,40 @@ BEGIN
     INSERT INTO product (name, notes, fk_company, creation_date)
     VALUES
         ("insert fileté", "notes", "1", "2019-11-24 00:00:00"),
-        ("insert fileté 2", "notes", "1", "2019-11-24 00:00:00");
+        ("insert fileté 2", "notes", "1", "2019-11-24 00:00:00"),
+        ("insert fileté 3", "notes", "1", "2019-11-24 00:00:00"),
+        ("insert fileté 4", "notes", "1", "2019-11-24 00:00:00"),
+        ("insert fileté 5", "notes", "1", "2019-11-24 00:00:00"),
+        ("insert fileté 6", "notes", "1", "2019-11-24 00:00:00"),
+        ("insert fileté 7", "notes", "1", "2019-11-24 00:00:00"),
+        ("insert fileté 8", "notes", "1", "2019-11-24 00:00:00"),
+        ("insert fileté 9", "notes", "1", "2019-11-24 00:00:00"),
+        ("insert fileté 10", "notes", "1", "2019-11-24 00:00:00"),
+        ("insert fileté 11", "notes", "1", "2019-11-24 00:00:00"),
+        ("insert fileté 12", "notes", "1", "2019-11-24 00:00:00"),
+        ("insert fileté 13", "notes", "1", "2019-11-24 00:00:00");
 
     INSERT INTO supplier (name, website, notes, fk_company, creation_date)
     VALUES
         ("rs-online", "https://fr.rs-online.com", "notes", "1", "2019-11-24 00:00:00"),
-        ("rs-online-2", "https://fr.rs-online-2.com", "notes", "1", "2019-11-24 00:00:00");
+        ("rs-online-2", "https://fr.rs-online-2.com", "notes", "1", "2019-11-24 00:00:00"),
+        ("rs-online-3", "https://fr.rs-online-3.com", "notes", "1", "2019-11-24 00:00:00"),
+        ("rs-online-4", "https://fr.rs-online-3.com", "notes", "1", "2019-11-24 00:00:00");
 
     INSERT INTO at_product_supplier (fk_product, fk_supplier, fk_company, notes)
     VALUES
         ("1", "1", "1", "notes"),
-        ("2", "1", "1", "notes");
+        ("2", "1", "1", "notes"),
+        ("3", "1", "1", "notes"),
+        ("4", "1", "1", "notes"),
+        ("5", "2", "1", "notes"),
+        ("6", "2", "1", "notes"),
+        ("7", "2", "1", "notes"),
+        ("8", "2", "1", "notes"),
+        ("9", "3", "1", "notes"),
+        ("10", "3", "1", "notes"),
+        ("11", "3", "1", "notes"),
+        ("12", "3", "1", "notes");
 
 END //
 

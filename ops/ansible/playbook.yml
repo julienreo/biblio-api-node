@@ -180,7 +180,7 @@
         name: ##########
         source: pull
 
-    - name: Pull biblio-tests image
+    - name: Pull biblio-test image
       docker_image:
         name: ##########
         source: pull

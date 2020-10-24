@@ -1,9 +1,12 @@
 node_modules
 npm-debug.log
 Dockerfile
+Dockerfile.test
 .dockerignore
 .git
 .gitignore
 .idea
 .eslintrc.js
+.eslintignore
+.prettierrc
 README.md

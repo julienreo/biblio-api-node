@@ -1,0 +1,5 @@
+FROM jubdx/biblio
+
+RUN npm install -g mocha
+
+CMD ["mocha", "--timeout 10000", "-r", "/app/node_modules/ts-node/register", "-r", "/app/node_modules/tsconfig-paths/register", "--exit", "./dist/test/integration/*.test.js", "--reporter", "spec"]

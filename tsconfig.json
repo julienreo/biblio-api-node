@@ -1,0 +1,54 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "pretty": true,
+    "sourceMap": true,
+    "removeComments": true,
+    "target": "es2019",
+    "noImplicitAny": true,
+    "rootDir": ".",
+    "outDir": "./dist",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@src/*": [
+        "src/*"
+      ],
+      "@config/*": [
+        "src/config/*"
+      ],
+      "@services/*": [
+        "src/services/*"
+      ],
+      "@modules/*": [
+        "src/modules/*"
+      ],
+      "@lib/*": [
+        "src/lib/*"
+      ],
+      "@middleware/*": [
+        "src/middleware/*"
+      ],
+      "@models/*": [
+        "src/models/*"
+      ],
+      "@routes/*": [
+        "src/routes/*"
+      ],
+      "@controllers/*": [
+        "src/controllers/*"
+      ],
+      "@test/*": [
+        "test/*"
+      ]
+    }
+  },
+  "include": [
+    "./src/**/*",
+    "test/**/*"
+  ]
+}

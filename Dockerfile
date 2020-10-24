@@ -8,6 +8,8 @@ RUN npm install
 
 COPY . .
 
-CMD ["node", "index.js"]
+RUN npm run build
+
+CMD ["node", "-r", "ts-node/register", "-r", "tsconfig-paths/register", "./dist/src/index.js"]
 
 EXPOSE 3000
