@@ -23,16 +23,14 @@ export const formatQuery = (
   let formattedQuery = sql;
 
   const formattedParams: (string | number)[] = [];
-  for (let i = 0; i < Object.entries(params).length; i++) {
-    formattedQuery = formattedQuery.replace(/:(\w*)/u, (match, p1) => {
-      // If p1 is not a property of params object
-      if (typeof params[p1] === 'undefined') {
-        throw new FormatQueryError(p1);
-      }
-      formattedParams.push(params[p1]);
-      return '?';
-    });
-  }
+  formattedQuery = formattedQuery.replace(/:(\w*)/gu, (match, p1) => {
+    // If p1 is not a property of params object
+    if (typeof params[p1] === 'undefined') {
+      throw new FormatQueryError(p1);
+    }
+    formattedParams.push(params[p1]);
+    return '?';
+  });
 
   return {
     sql: formattedQuery,

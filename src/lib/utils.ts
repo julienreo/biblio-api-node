@@ -26,15 +26,11 @@ export const snakeToCamelString = (str: string): string =>
  */
 export const camelToSnakeObject = (object: {
   [key: string]: string | number;
-}): { [key: string]: string | number } => {
-  const newObject: { [key: string]: string | number } = {};
-
-  for (const [key, value] of Object.entries(object)) {
-    newObject[camelToSnakeString(key)] = value;
-  }
-
-  return newObject;
-};
+}): { [key: string]: string | number } =>
+  Object.entries(object).reduce((acc, [k, v]) => {
+    acc[camelToSnakeString(k)] = v;
+    return acc;
+  }, {} as { [key: string]: any });
 
 /**
  * Convert an object with snake_case keys into an object with camelCase keys
@@ -43,15 +39,11 @@ export const camelToSnakeObject = (object: {
  */
 export const snakeToCamelObject = (object: {
   [key: string]: string | number | Date;
-}): { [key: string]: string | number | Date } => {
-  const newObject: { [key: string]: string | number | Date } = {};
-
-  for (const [key, value] of Object.entries(object)) {
-    newObject[snakeToCamelString(key)] = value;
-  }
-
-  return newObject;
-};
+}): { [key: string]: string | number | Date } =>
+  Object.entries(object).reduce((acc, [k, v]) => {
+    acc[snakeToCamelString(k)] = v;
+    return acc;
+  }, {} as { [key: string]: any });
 
 /**
  * Calculate and return the SHA-1 hash of a string

@@ -35,17 +35,21 @@ const startServer = (app: Application): Server => {
   });
 
   // Handle termination signals
-  for (const signal of ['SIGINT', 'SIGTERM', 'SIGQUIT']) {
-    process.on(signal, async () => {
-      try {
-        await databaseClient.closeConnections();
-        await closeServer(server);
-        process.exit(constants.process.exitCode.success);
-      } catch (e) {
-        process.exit(constants.process.exitCode.error);
-      }
-    });
-  }
+  ['SIGINT', 'SIGTERM', 'SIGQUIT'].reduce(
+    (p, signal) =>
+      p.then(() =>
+        process.on(signal, async () => {
+          try {
+            await databaseClient.closeConnections();
+            await closeServer(server);
+            process.exit(constants.process.exitCode.success);
+          } catch (e) {
+            process.exit(constants.process.exitCode.error);
+          }
+        })
+      ),
+    Promise.resolve()
+  );
 
   return server;
 };
