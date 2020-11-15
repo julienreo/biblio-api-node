@@ -10,3 +10,4 @@ Dockerfile.test
 .eslintignore
 .prettierrc
 README.md
+volumes

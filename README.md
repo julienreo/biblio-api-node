@@ -27,6 +27,7 @@ This API is the back-end structure of a **Products Library** I created for an **
 
 With this solution, they now have an API to call to instantly know which suppliers sell the products they need to buy and they can benchmark their offers thanks to technical notes they can edit.   
 
+
 ## DESCRIPTION
 
 The API exposes [routes](#routes) to handle standard **CRUD** operations:
@@ -41,9 +42,11 @@ The API exposes [routes](#routes) to handle standard **CRUD** operations:
 
 **MariaDB** is used as a relational **Database Management System** to persist data.
 
+
 ## CACHING
 
 **Redis** is used for **caching** user requests responses.
+
 
 ## TOOLS
 
@@ -65,9 +68,9 @@ The API exposes [routes](#routes) to handle standard **CRUD** operations:
 **Integration Tests** are used to test API's routes.
 
 
-## CI - CD
+## LOCAL INSTALL
 
-**Jenkins** is used as a **continuous integration** and **continuous deployment** tool to manage the **integration testing** process and handle the **deployment** of the application.
+**Docker Compose** is used to run **MariaDB** and **Redis** locally.
 
 
 ## OPS
@@ -77,6 +80,11 @@ The API exposes [routes](#routes) to handle standard **CRUD** operations:
 **Vagrant** is used to **create locally** a development environment that **reproduces** the production environment.
 
 **Ansible** is used to **provision**, **configure** and **manage** the local and production environments.
+
+
+## CI - CD
+
+**Jenkins** is used as a **continuous integration** and **continuous delivery** tool to manage the **integration testing** process and handle the **deployment** of the application.
 
 
 ## CODE QUALITY
