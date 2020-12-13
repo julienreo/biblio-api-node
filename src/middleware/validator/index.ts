@@ -1,5 +1,5 @@
 import validator from '@middleware/helpers/validator';
-import { createError } from '@src/modules/error/errorFactory';
+import { createError } from '@src/modules/errors/index';
 import Ajv from 'ajv';
 import ajvError from 'ajv-errors';
 import { NextFunction, Request, Response } from 'express';

@@ -2,7 +2,7 @@ import constants from '@config/constants';
 import config from '@config/index';
 import logger from '@lib/logger';
 import databaseClient from '@modules/database';
-import { createError } from '@src/modules/error/errorFactory';
+import { createError } from '@src/modules/errors/index';
 import { Application } from 'express';
 import { Server } from 'http';
 

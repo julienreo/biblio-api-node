@@ -1,5 +1,5 @@
 import databaseClient, { formatQuery } from '@modules/database';
-import { FormatQueryError } from '@modules/error';
+import { FormatQueryError } from '@modules/errors';
 import { expect } from 'chai';
 import sinon from 'sinon';
 const { PromisePool } = require('../../../node_modules/mysql2/promise');

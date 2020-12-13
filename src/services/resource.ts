@@ -1,12 +1,19 @@
 import constants from '@config/constants';
 import { sha1 } from '@lib/utils';
-import Product, { ProductData } from '@models/product';
-import ProductSupplier, { ProductSupplierData } from '@models/product-supplier';
-import Supplier, { SupplierData } from '@models/supplier';
-import User, { UserData } from '@models/user';
+import { ProductData } from '@models/product';
+import { ProductSupplierData } from '@models/product-supplier';
+import { SupplierData } from '@models/supplier';
+import { UserData } from '@models/user';
 import cacheClient from '@modules/cache';
 import { QueryOptions } from '@modules/database';
-import { createError } from '@src/modules/error/errorFactory';
+import { createError } from '@src/modules/errors/index';
+import {
+  createResource,
+  deleteOneResource,
+  retrieveAllResources,
+  retrieveOneResource,
+  updateOneResource,
+} from '@src/modules/resource';
 import { ResultSetHeader } from 'mysql2';
 
 /**
@@ -29,19 +36,8 @@ const retrieveOne = async (
   resource = await cacheClient.find(cacheKey);
 
   if (resource === null) {
-    switch (resourceName) {
-      case 'user':
-        resource = await User.findOne(data, { connection });
-        break;
-      case 'product':
-        resource = await Product.findOne(data, { connection });
-        break;
-      case 'supplier':
-        resource = await Supplier.findOne(data, { connection });
-        break;
-      default:
-        throw createError('ApiError', 'Invalid resource name');
-    }
+    resource = await retrieveOneResource(resourceName, data, { connection });
+
     if (typeof resource !== 'undefined') {
       await cacheClient.save(cacheKey, JSON.stringify(resource));
     }
@@ -65,21 +61,10 @@ const retrieveAll = async (
   options: QueryOptions = {}
 ): Promise<{ [key: string]: string | number | Date }[]> => {
   const { connection } = options;
-  let resources;
 
-  switch (resourceName) {
-    case 'user':
-      resources = await User.findAll(data, { connection });
-      break;
-    case 'product':
-      resources = await Product.findAll(data, { connection });
-      break;
-    case 'supplier':
-      resources = await Supplier.findAll(data, { connection });
-      break;
-    default:
-      throw createError('ApiError', 'Invalid resource name');
-  }
+  const resources = await retrieveAllResources(resourceName, data, {
+    connection,
+  });
 
   return resources;
 };
@@ -97,27 +82,12 @@ const insertOne = async (
   options: QueryOptions = {}
 ): Promise<number> => {
   const { connection } = options;
-  let resource;
-
-  switch (resourceName) {
-    case 'user':
-      resource = new User(data as UserData);
-      break;
-    case 'product':
-      resource = new Product(data as ProductData);
-      break;
-    case 'supplier':
-      resource = new Supplier(data as SupplierData);
-      break;
-    case 'productSupplier':
-      resource = new ProductSupplier(data as ProductSupplierData);
-      break;
-    default:
-      throw createError('ApiError', 'Invalid resource name');
-  }
 
   try {
+    const resource = createResource(resourceName, data);
+
     const result = await resource.save({ connection });
+
     return result.insertId;
   } catch (e) {
     if (e.errno === constants.dbErrorCodes.duplicateEntryError) {
@@ -142,39 +112,27 @@ const updateOne = async (
   options: QueryOptions = {}
 ): Promise<ResultSetHeader> => {
   const { connection } = options;
-  let result;
 
   try {
-    switch (resourceName) {
-      case 'product':
-        result = await Product.modifyOne(data, condition, { connection });
-        break;
-      case 'supplier':
-        result = await Supplier.modifyOne(data, condition, { connection });
-        break;
-      case 'productSupplier':
-        result = await ProductSupplier.modifyOne(data, condition, {
-          connection,
-        });
-        break;
-      default:
-        throw createError('ApiError', 'Invalid resource name');
-    }
+    const result = await updateOneResource(resourceName, data, condition, {
+      connection,
+    });
+
     // Delete resource from cache
     const cacheKey = sha1(`${resourceName}#data:${JSON.stringify(condition)}`);
     await cacheClient.delete(cacheKey);
+
+    if (result.affectedRows === 0 && errors !== null) {
+      throw createError('NotFoundError', errors.notFound);
+    }
+
+    return result;
   } catch (e) {
     if (e.errno === constants.dbErrorCodes.duplicateEntryError) {
       throw createError('InsertionError', errors.alreadyExists);
     }
     throw e;
   }
-
-  if (result.affectedRows === 0 && errors !== null) {
-    throw createError('NotFoundError', errors.notFound);
-  }
-
-  return result;
 };
 
 /**
@@ -190,21 +148,8 @@ const removeOne = async (
   options: QueryOptions = {}
 ): Promise<ResultSetHeader> => {
   const { connection } = options;
-  let result;
 
-  switch (resourceName) {
-    case 'product':
-      result = await Product.deleteOne(data, { connection });
-      break;
-    case 'supplier':
-      result = await Supplier.deleteOne(data, { connection });
-      break;
-    case 'productSupplier':
-      result = await ProductSupplier.deleteOne(data, { connection });
-      break;
-    default:
-      throw createError('ApiError', 'Invalid resource name');
-  }
+  const result = await deleteOneResource(resourceName, data, { connection });
 
   if (result.affectedRows === 0 && errorMessage) {
     throw createError('NotFoundError', errorMessage);

@@ -1,5 +1,5 @@
 import config from '@config/index';
-import { createError } from '@src/modules/error/errorFactory';
+import { createError } from '@src/modules/errors/index';
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 import jwt from 'jsonwebtoken';
 

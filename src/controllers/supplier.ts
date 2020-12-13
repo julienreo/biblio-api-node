@@ -3,7 +3,7 @@ import logger from '@lib/logger';
 import { AuthenticateRequest } from '@middleware/authenticate';
 import databaseService from '@services/database';
 import resourceService from '@services/resource';
-import { createError } from '@src/modules/error/errorFactory';
+import { createError } from '@src/modules/errors/index';
 import { NextFunction, Response } from 'express';
 
 const fetchOne = async (

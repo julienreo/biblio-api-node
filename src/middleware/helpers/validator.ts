@@ -3,7 +3,7 @@ import productSupplierSchema from '@middleware/validator/schemas/product-supplie
 import supplierSchema from '@middleware/validator/schemas/supplier';
 import userSchema from '@middleware/validator/schemas/user';
 import userDetailsSchema from '@middleware/validator/schemas/user-details';
-import { createError } from '@src/modules/error/errorFactory';
+import { createError } from '@src/modules/errors/index';
 
 /**
  * Returns the JSON schema that corresponds to the provided resource type

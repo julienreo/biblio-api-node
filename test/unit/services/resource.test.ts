@@ -4,7 +4,7 @@ import Resource from '@models/resource';
 import Supplier from '@models/supplier';
 import User from '@models/user';
 import { _Cache } from '@modules/cache';
-import { ApiError, InsertionError, NotFoundError } from '@modules/error';
+import { ApiError, InsertionError, NotFoundError } from '@modules/errors';
 import resourceService from '@services/resource';
 import { expect } from 'chai';
 import sinon from 'sinon';

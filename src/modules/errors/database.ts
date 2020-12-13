@@ -1,4 +1,4 @@
-import { ApiError } from '@modules/error/api';
+import { ApiError } from '@src/modules/errors/api';
 
 class DatabaseError extends ApiError {
   /**

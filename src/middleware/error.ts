@@ -1,8 +1,8 @@
 import constants from '@config/constants';
 import logger from '@lib/logger';
 import { AuthenticateRequest } from '@middleware/authenticate';
-import { Errors } from '@modules/error';
-import { createError } from '@src/modules/error/errorFactory';
+import { Errors } from '@modules/errors';
+import { createError } from '@src/modules/errors/index';
 import {
   ErrorRequestHandler,
   NextFunction,

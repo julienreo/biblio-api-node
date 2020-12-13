@@ -1,4 +1,4 @@
-import { createError } from '@src/modules/error/errorFactory';
+import { createError } from '@src/modules/errors/index';
 import bcrypt from 'bcryptjs';
 
 /**

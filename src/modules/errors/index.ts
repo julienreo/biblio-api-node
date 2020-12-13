@@ -1,22 +1,74 @@
+import { ApiError } from '@src/modules/errors/api';
 import {
-  ApiError,
+  InvalidTokenError,
+  MissingTokenError,
+} from '@src/modules/errors/authentication';
+import {
   CacheConnectionError,
   CacheDeleteAllError,
   CacheDeleteError,
   CacheGetError,
   CacheSetError,
+} from '@src/modules/errors/cache';
+import {
   CloseConnectionsError,
   FormatQueryError,
   InsertionError,
-  InvalidTokenError,
-  MissingTokenError,
-  NotFoundError,
-  QueryParamError,
   RemovalError,
+} from '@src/modules/errors/database';
+import { QueryParamError, RequestError } from '@src/modules/errors/request';
+import {
+  NotFoundError,
+  ResourceError,
+  ValidationError,
+} from '@src/modules/errors/resource';
+import { ServerError } from '@src/modules/errors/server';
+
+interface UnkownError extends Error {
+  status?: number;
+}
+
+export type Errors =
+  | UnkownError
+  | ApiError
+  | ServerError
+  | ValidationError
+  | NotFoundError
+  | ResourceError
+  | MissingTokenError
+  | InvalidTokenError
+  | RequestError
+  | QueryParamError
+  | InsertionError
+  | RemovalError
+  | FormatQueryError
+  | CloseConnectionsError
+  | CacheConnectionError
+  | CacheGetError
+  | CacheSetError
+  | CacheDeleteError
+  | CacheDeleteAllError;
+
+export {
+  ApiError,
+  MissingTokenError,
+  InvalidTokenError,
+  CacheConnectionError,
+  CacheGetError,
+  CacheSetError,
+  CacheDeleteError,
+  CacheDeleteAllError,
+  InsertionError,
+  RemovalError,
+  FormatQueryError,
+  CloseConnectionsError,
+  RequestError,
+  QueryParamError,
+  ValidationError,
+  NotFoundError,
   ResourceError,
   ServerError,
-  ValidationError,
-} from '@modules/error';
+};
 
 export const createError = (
   type: string,

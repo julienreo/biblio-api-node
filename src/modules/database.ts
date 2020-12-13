@@ -1,6 +1,6 @@
 import config from '@config/index';
 import logger from '@lib/logger';
-import { createError } from '@src/modules/error/errorFactory';
+import { createError } from '@src/modules/errors/index';
 import mysql from 'mysql2/promise';
 
 export interface QueryOptions {
