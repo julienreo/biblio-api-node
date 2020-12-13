@@ -1,12 +1,6 @@
 import config from '@config/index';
 import logger from '@lib/logger';
-import {
-  CacheConnectionError,
-  CacheDeleteAllError,
-  CacheDeleteError,
-  CacheGetError,
-  CacheSetError,
-} from '@modules/errors';
+import { createError } from '@src/modules/error/errorFactory';
 import redis from 'redis';
 
 class Cache {
@@ -19,7 +13,7 @@ class Cache {
     });
 
     this.redisClient.on('error', (e) => {
-      const error = new CacheConnectionError(e.message);
+      const error = createError('CacheConnectionError', e.message);
       logger.error({ errors: [error.message] });
       throw error;
     });
@@ -36,7 +30,7 @@ class Cache {
     return new Promise((resolve, reject) => {
       this.redisClient.get(key, (e, res) => {
         if (e) {
-          const error = new CacheGetError(e.message);
+          const error = createError('CacheGetError', e.message);
           logger.error({ errors: [error.message] });
           reject(error);
         }
@@ -55,7 +49,7 @@ class Cache {
     return new Promise((resolve, reject) => {
       this.redisClient.set(key, value, (e) => {
         if (e) {
-          const error = new CacheSetError(e.message);
+          const error = createError('CacheSetError', e.message);
           logger.error({ errors: [error.message] });
           reject(error);
         }
@@ -73,7 +67,7 @@ class Cache {
     return new Promise((resolve, reject) => {
       this.redisClient.del(key, (e) => {
         if (e) {
-          const error = new CacheDeleteError(e.message);
+          const error = createError('CacheDeleteError', e.message);
           logger.error({ errors: [error.message] });
           reject(error);
         }
@@ -86,7 +80,7 @@ class Cache {
     return new Promise((resolve, reject) => {
       this.redisClient.flushall((e) => {
         if (e) {
-          const error = new CacheDeleteAllError(e.message);
+          const error = createError('CacheDeleteAllError', e.message);
           logger.error({ errors: [error.message] });
           reject(error);
         }

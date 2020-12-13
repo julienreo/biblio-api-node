@@ -6,7 +6,7 @@ import Supplier, { SupplierData } from '@models/supplier';
 import User, { UserData } from '@models/user';
 import cacheClient from '@modules/cache';
 import { QueryOptions } from '@modules/database';
-import { ApiError, InsertionError, NotFoundError } from '@modules/errors';
+import { createError } from '@src/modules/error/errorFactory';
 import { ResultSetHeader } from 'mysql2';
 
 /**
@@ -40,7 +40,7 @@ const retrieveOne = async (
         resource = await Supplier.findOne(data, { connection });
         break;
       default:
-        throw new ApiError('Invalid resource name');
+        throw createError('ApiError', 'Invalid resource name');
     }
     if (typeof resource !== 'undefined') {
       await cacheClient.save(cacheKey, JSON.stringify(resource));
@@ -48,7 +48,7 @@ const retrieveOne = async (
   }
 
   if (typeof resource === 'undefined') {
-    throw new NotFoundError(errorMessage);
+    throw createError('NotFoundError', errorMessage);
   }
 
   return resource;
@@ -78,7 +78,7 @@ const retrieveAll = async (
       resources = await Supplier.findAll(data, { connection });
       break;
     default:
-      throw new ApiError('Invalid resource name');
+      throw createError('ApiError', 'Invalid resource name');
   }
 
   return resources;
@@ -113,7 +113,7 @@ const insertOne = async (
       resource = new ProductSupplier(data as ProductSupplierData);
       break;
     default:
-      throw new ApiError('Invalid resource name');
+      throw createError('ApiError', 'Invalid resource name');
   }
 
   try {
@@ -121,7 +121,7 @@ const insertOne = async (
     return result.insertId;
   } catch (e) {
     if (e.errno === constants.dbErrorCodes.duplicateEntryError) {
-      throw new InsertionError(errorMessage);
+      throw createError('InsertionError', errorMessage);
     }
     throw e;
   }
@@ -158,20 +158,20 @@ const updateOne = async (
         });
         break;
       default:
-        throw new ApiError('Invalid resource name');
+        throw createError('ApiError', 'Invalid resource name');
     }
     // Delete resource from cache
     const cacheKey = sha1(`${resourceName}#data:${JSON.stringify(condition)}`);
     await cacheClient.delete(cacheKey);
   } catch (e) {
     if (e.errno === constants.dbErrorCodes.duplicateEntryError) {
-      throw new InsertionError(errors.alreadyExists);
+      throw createError('InsertionError', errors.alreadyExists);
     }
     throw e;
   }
 
   if (result.affectedRows === 0 && errors !== null) {
-    throw new NotFoundError(errors.notFound);
+    throw createError('NotFoundError', errors.notFound);
   }
 
   return result;
@@ -203,11 +203,11 @@ const removeOne = async (
       result = await ProductSupplier.deleteOne(data, { connection });
       break;
     default:
-      throw new ApiError('Invalid resource name');
+      throw createError('ApiError', 'Invalid resource name');
   }
 
   if (result.affectedRows === 0 && errorMessage) {
-    throw new NotFoundError(errorMessage);
+    throw createError('NotFoundError', errorMessage);
   }
 
   return result;

@@ -1,4 +1,4 @@
-import { ValidationError } from '@modules/errors';
+import { createError } from '@src/modules/error/errorFactory';
 import bcrypt from 'bcryptjs';
 
 /**
@@ -12,7 +12,10 @@ const comparePassword = async (
   const passwordMatch = await bcrypt.compare(suppliedPassword, userPassword);
 
   if (passwordMatch === false) {
-    throw new ValidationError('La validation du mot de passe a échoué');
+    throw createError(
+      'ValidationError',
+      'La validation du mot de passe a échoué'
+    );
   }
 };
 

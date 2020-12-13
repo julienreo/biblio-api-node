@@ -1,5 +1,5 @@
 import config from '@config/index';
-import { InvalidTokenError, MissingTokenError } from '@modules/errors';
+import { createError } from '@src/modules/error/errorFactory';
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
@@ -27,7 +27,7 @@ const authenticate: RequestHandler = (
   const accessToken = req.headers['access-token'] as string;
 
   if (typeof accessToken === 'undefined') {
-    return next(new MissingTokenError('Token manquant'));
+    return next(createError('MissingTokenError', 'Token manquant'));
   }
 
   try {
@@ -36,7 +36,7 @@ const authenticate: RequestHandler = (
       process.env.JWT_SECRET || config.jwtSecret
     ) as AccessToken;
   } catch (e) {
-    return next(new InvalidTokenError('Token invalide'));
+    return next(createError('InvalidTokenError', 'Token invalide'));
   }
 
   return next();

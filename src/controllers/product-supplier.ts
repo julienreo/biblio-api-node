@@ -1,8 +1,8 @@
 import constants from '@config/constants';
 import logger from '@lib/logger';
 import { AuthenticateRequest } from '@middleware/authenticate';
-import { InsertionError, ResourceError } from '@modules/errors';
 import resourceService from '@services/resource';
+import { createError } from '@src/modules/error/errorFactory';
 import { NextFunction, Response } from 'express';
 
 const create = async (
@@ -36,7 +36,10 @@ const create = async (
       e.errno === constants.dbErrorCodes.foreignKeyConstraintAddError
     ) {
       return next(
-        new InsertionError("Le produit ou le fournisseur n'existe pas")
+        createError(
+          'InsertionError',
+          "Le produit ou le fournisseur n'existe pas"
+        )
       );
     }
     return next(e);
@@ -54,7 +57,10 @@ const update = async (
     // Notes field is the only one that can be updated but is optional, check that it has been passed
     if (typeof notes === 'undefined') {
       return next(
-        new ResourceError('Le champ à mettre à jour (notes) est manquant')
+        createError(
+          'ResourceError',
+          'Le champ à mettre à jour (notes) est manquant'
+        )
       );
     }
 

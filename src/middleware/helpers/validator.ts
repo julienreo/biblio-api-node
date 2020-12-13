@@ -3,7 +3,7 @@ import productSupplierSchema from '@middleware/validator/schemas/product-supplie
 import supplierSchema from '@middleware/validator/schemas/supplier';
 import userSchema from '@middleware/validator/schemas/user';
 import userDetailsSchema from '@middleware/validator/schemas/user-details';
-import { ApiError } from '@modules/errors';
+import { createError } from '@src/modules/error/errorFactory';
 
 /**
  * Returns the JSON schema that corresponds to the provided resource type
@@ -30,7 +30,7 @@ const getSchema = (
     case 'productSupplier':
       return productSupplierSchema;
     default:
-      throw new ApiError('Invalid object name');
+      throw createError('ApiError', 'Invalid object name');
   }
 };
 

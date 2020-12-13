@@ -1,28 +1,28 @@
-import { ApiError } from '@modules/errors/api';
+import { ApiError } from '@modules/error/api';
 import {
   InvalidTokenError,
   MissingTokenError,
-} from '@modules/errors/authentication';
+} from '@modules/error/authentication';
 import {
   CacheConnectionError,
   CacheDeleteAllError,
   CacheDeleteError,
   CacheGetError,
   CacheSetError,
-} from '@modules/errors/cache';
+} from '@modules/error/cache';
 import {
   CloseConnectionsError,
   FormatQueryError,
   InsertionError,
   RemovalError,
-} from '@modules/errors/database';
-import { QueryParamError, RequestError } from '@modules/errors/request';
+} from '@modules/error/database';
+import { QueryParamError, RequestError } from '@modules/error/request';
 import {
   NotFoundError,
   ResourceError,
   ValidationError,
-} from '@modules/errors/resource';
-import { ServerError } from '@modules/errors/server';
+} from '@modules/error/resource';
+import { ServerError } from '@modules/error/server';
 
 interface UnkownError extends Error {
   status?: number;

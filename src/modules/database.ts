@@ -1,6 +1,6 @@
 import config from '@config/index';
 import logger from '@lib/logger';
-import { CloseConnectionsError, FormatQueryError } from '@modules/errors';
+import { createError } from '@src/modules/error/errorFactory';
 import mysql from 'mysql2/promise';
 
 export interface QueryOptions {
@@ -26,7 +26,7 @@ export const formatQuery = (
   formattedQuery = formattedQuery.replace(/:(\w*)/gu, (match, p1) => {
     // If p1 is not a property of params object
     if (typeof params[p1] === 'undefined') {
-      throw new FormatQueryError(p1);
+      throw createError('FormatQueryError', p1);
     }
     formattedParams.push(params[p1]);
     return '?';
@@ -92,7 +92,7 @@ class Database {
       await this.pool.end();
       logger.info('Database connections closed successfully');
     } catch (e) {
-      const error = new CloseConnectionsError(e.message);
+      const error = createError('CloseConnectionsError', e.message);
       logger.error({ errors: [error.message] });
       throw error;
     }

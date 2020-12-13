@@ -1,4 +1,4 @@
-import { ValidationError } from '@modules/errors';
+import { ValidationError } from '@modules/error';
 import passwordService from '@services/password';
 import bcrypt from 'bcryptjs';
 import { expect } from 'chai';

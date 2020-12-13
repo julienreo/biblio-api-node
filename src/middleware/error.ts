@@ -1,7 +1,8 @@
 import constants from '@config/constants';
 import logger from '@lib/logger';
 import { AuthenticateRequest } from '@middleware/authenticate';
-import { Errors, NotFoundError } from '@modules/errors';
+import { Errors } from '@modules/error';
+import { createError } from '@src/modules/error/errorFactory';
 import {
   ErrorRequestHandler,
   NextFunction,
@@ -16,7 +17,7 @@ import {
 const notFound: RequestHandler = (req: AuthenticateRequest, res: Response) => {
   const userId =
     typeof req.accessToken === 'undefined' ? null : req.accessToken.id;
-  const error = new NotFoundError("La page demandée n'existe pas");
+  const error = createError('NotFoundError', "La page demandée n'existe pas");
   logger.error({
     ip: req.ip,
     path: req.originalUrl,

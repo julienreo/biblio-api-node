@@ -1,9 +1,9 @@
 import constants from '@config/constants';
 import logger from '@lib/logger';
 import { AuthenticateRequest } from '@middleware/authenticate';
-import { RemovalError } from '@modules/errors';
 import databaseService from '@services/database';
 import resourceService from '@services/resource';
+import { createError } from '@src/modules/error/errorFactory';
 import { NextFunction, Response } from 'express';
 
 const fetchOne = async (
@@ -181,7 +181,10 @@ const remove = async (
       e.errno === constants.dbErrorCodes.foreignKeyConstraintDeleteError
     ) {
       return next(
-        new RemovalError('Des produits sont associés à ce fournisseur')
+        createError(
+          'RemovalError',
+          'Des produits sont associés à ce fournisseur'
+        )
       );
     }
     return next(e);

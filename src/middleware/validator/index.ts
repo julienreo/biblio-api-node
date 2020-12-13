@@ -1,5 +1,5 @@
 import validator from '@middleware/helpers/validator';
-import { ApiError, QueryParamError, ValidationError } from '@modules/errors';
+import { createError } from '@src/modules/error/errorFactory';
 import Ajv from 'ajv';
 import ajvError from 'ajv-errors';
 import { NextFunction, Request, Response } from 'express';
@@ -25,7 +25,7 @@ const validateType = (
 
   if (validate.errors) {
     const errorsMessages = validate.errors.map((error) => error.message);
-    return next(new ValidationError(errorsMessages[0]));
+    return next(createError('ValidationError', errorsMessages[0]));
   }
 
   return next();
@@ -46,10 +46,10 @@ const validateParam = (
 
   if (typeName === 'number') {
     if (!param.match(/^[0-9]+$/u)) {
-      return next(new QueryParamError('Paramètre invalide'));
+      return next(createError('QueryParamError', 'Paramètre invalide'));
     }
   } else {
-    return next(new ApiError('Invalid type name'));
+    return next(createError('ApiError', 'Invalid type name'));
   }
 
   return next();

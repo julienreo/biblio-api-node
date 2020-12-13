@@ -2,7 +2,7 @@ import constants from '@config/constants';
 import config from '@config/index';
 import logger from '@lib/logger';
 import databaseClient from '@modules/database';
-import { ServerError } from '@modules/errors';
+import { createError } from '@src/modules/error/errorFactory';
 import { Application } from 'express';
 import { Server } from 'http';
 
@@ -15,7 +15,7 @@ const closeServer = (server: Server): Promise<void> =>
   new Promise((resolve, reject) => {
     server.close((e) => {
       if (e) {
-        const error = new ServerError(e.message);
+        const error = createError('ServerError', e.message);
         logger.error({ errors: [error.message] });
         reject(error);
       }

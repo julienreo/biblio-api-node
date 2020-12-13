@@ -1,4 +1,4 @@
-import { ApiError } from '@modules/errors/api';
+import { ApiError } from '@modules/error/api';
 
 class AuthenticationError extends ApiError {
   /**
