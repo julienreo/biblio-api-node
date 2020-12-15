@@ -13,7 +13,7 @@ import {
   retrieveAllResources,
   retrieveOneResource,
   updateOneResource,
-} from '@src/modules/resource';
+} from '@src/services/helpers/resource';
 import { ResultSetHeader } from 'mysql2';
 
 /**
