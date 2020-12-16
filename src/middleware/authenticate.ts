@@ -35,11 +35,10 @@ const authenticate: RequestHandler = (
       accessToken,
       process.env.JWT_SECRET || config.jwtSecret
     ) as AccessToken;
+    return next();
   } catch (e) {
     return next(createError('InvalidTokenError', 'Token invalide'));
   }
-
-  return next();
 };
 
 export default {

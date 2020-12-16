@@ -48,11 +48,10 @@ const validateParam = (
     if (!param.match(/^[0-9]+$/u)) {
       return next(createError('QueryParamError', 'Paramètre invalide'));
     }
-  } else {
-    return next(createError('ApiError', 'Invalid type name'));
+    return next();
   }
 
-  return next();
+  return next(createError('ApiError', 'Invalid type name'));
 };
 
 export default {
