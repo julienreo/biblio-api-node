@@ -7,18 +7,9 @@ export interface ProductSupplierData {
   notes?: string;
 }
 
-export type ProductSupplierFields = [
-  'fkProduct',
-  'fkSupplier',
-  'fkCompany',
-  'notes'
-];
+export type ProductSupplierFields = ['fkProduct', 'fkSupplier', 'fkCompany', 'notes'];
 
-export type ProductSupplierFieldsValues =
-  | 'fkProduct'
-  | 'fkSupplier'
-  | 'fkCompany'
-  | 'notes';
+export type ProductSupplierFieldsValues = 'fkProduct' | 'fkSupplier' | 'fkCompany' | 'notes';
 
 /**
  * Model that represents the association between a product and a supplier

@@ -5,17 +5,11 @@ import bcrypt from 'bcryptjs';
  * @param suppliedPassword
  * @param userPassword
  */
-const comparePassword = async (
-  suppliedPassword: string,
-  userPassword: string
-): Promise<void> => {
+const comparePassword = async (suppliedPassword: string, userPassword: string): Promise<void> => {
   const passwordMatch = await bcrypt.compare(suppliedPassword, userPassword);
 
   if (passwordMatch === false) {
-    throw createError(
-      'ValidationError',
-      'La validation du mot de passe a échoué'
-    );
+    throw createError('ValidationError', 'La validation du mot de passe a échoué');
   }
 };
 
@@ -23,10 +17,8 @@ const comparePassword = async (
  * @param userPassword
  * @param salt
  */
-const hashPassword = async (
-  userPassword: string,
-  salt: number
-): Promise<string> => await bcrypt.hash(userPassword, salt);
+const hashPassword = async (userPassword: string, salt: number): Promise<string> =>
+  await bcrypt.hash(userPassword, salt);
 
 export default {
   comparePassword,

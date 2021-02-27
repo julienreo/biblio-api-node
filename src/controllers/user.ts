@@ -1,39 +1,25 @@
 import config from '@config/index';
 import logger from '@lib/logger';
 import { AuthenticateRequest } from '@middleware/authenticate';
+import { UserRecord } from '@models/user';
 import authenticationService from '@services/authentication';
 import passwordService from '@services/password';
 import resourceService from '@services/resource';
 import { NextFunction, Request, Response } from 'express';
 
-const login = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const userData = req.body;
 
-    const user = (await resourceService.retrieveOne(
+    const user = ((await resourceService.retrieveOne(
       'user',
       { email: userData.email.toLowerCase() },
       "L'utilisateur n'existe pas"
-    )) as {
-      id: number;
-      firstname: string;
-      lastname: string;
-      email: string;
-      password: string;
-      fkCompany: number;
-      creationDate: Date;
-    };
+    )) as unknown) as UserRecord;
 
     await passwordService.comparePassword(userData.password, user.password);
 
-    const accessToken = await authenticationService.getAccessToken(
-      user.id,
-      user.fkCompany
-    );
+    const accessToken = await authenticationService.getAccessToken(user.id, user.fkCompany);
 
     logger.info({
       ip: req.ip,
@@ -47,31 +33,17 @@ const login = async (
   }
 };
 
-const create = async (
-  req: AuthenticateRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const create = async (req: AuthenticateRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const userData = req.body;
     const { companyId } = req.accessToken;
 
     userData.fkCompany = companyId;
-    userData.password = await passwordService.hashPassword(
-      userData.password,
-      config.bcryptSaltRound
-    );
+    userData.password = await passwordService.hashPassword(userData.password, config.bcryptSaltRound);
 
-    const userId = await resourceService.insertOne(
-      'user',
-      userData,
-      "L'utilisateur existe déjà"
-    );
+    const userId = await resourceService.insertOne('user', userData, "L'utilisateur existe déjà");
 
-    const accessToken = await authenticationService.getAccessToken(
-      userId,
-      companyId
-    );
+    const accessToken = await authenticationService.getAccessToken(userId, companyId);
 
     logger.info({
       ip: req.ip,

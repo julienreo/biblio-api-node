@@ -19,11 +19,7 @@ export interface AuthenticateRequest extends Request {
  * @param res
  * @param next
  */
-const authenticate: RequestHandler = (
-  req: AuthenticateRequest,
-  res: Response,
-  next: NextFunction
-) => {
+const authenticate: RequestHandler = (req: AuthenticateRequest, res: Response, next: NextFunction) => {
   const accessToken = req.headers['access-token'] as string;
 
   if (typeof accessToken === 'undefined') {
@@ -31,10 +27,7 @@ const authenticate: RequestHandler = (
   }
 
   try {
-    req.accessToken = jwt.verify(
-      accessToken,
-      process.env.JWT_SECRET || config.jwtSecret
-    ) as AccessToken;
+    req.accessToken = jwt.verify(accessToken, process.env.JWT_SECRET || config.jwtSecret) as AccessToken;
     return next();
   } catch (e) {
     return next(createError('InvalidTokenError', 'Token invalide'));

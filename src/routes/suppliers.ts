@@ -23,19 +23,9 @@ router.post(
   productController.create
 );
 
-router.post(
-  '/',
-  middleware.authenticate,
-  validator.validateType('supplier'),
-  supplierController.create
-);
+router.post('/', middleware.authenticate, validator.validateType('supplier'), supplierController.create);
 
-router.put(
-  '/:supplierId',
-  middleware.authenticate,
-  validator.validateType('supplier'),
-  supplierController.update
-);
+router.put('/:supplierId', middleware.authenticate, validator.validateType('supplier'), supplierController.update);
 
 router.delete(
   '/:supplierId',

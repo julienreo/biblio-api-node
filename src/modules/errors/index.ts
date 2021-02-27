@@ -1,8 +1,5 @@
 import { ApiError } from '@src/modules/errors/api';
-import {
-  InvalidTokenError,
-  MissingTokenError,
-} from '@src/modules/errors/authentication';
+import { InvalidTokenError, MissingTokenError } from '@src/modules/errors/authentication';
 import {
   CacheConnectionError,
   CacheDeleteAllError,
@@ -10,18 +7,9 @@ import {
   CacheGetError,
   CacheSetError,
 } from '@src/modules/errors/cache';
-import {
-  CloseConnectionsError,
-  FormatQueryError,
-  InsertionError,
-  RemovalError,
-} from '@src/modules/errors/database';
+import { CloseConnectionsError, FormatQueryError, InsertionError, RemovalError } from '@src/modules/errors/database';
 import { QueryParamError, RequestError } from '@src/modules/errors/request';
-import {
-  NotFoundError,
-  ResourceError,
-  ValidationError,
-} from '@src/modules/errors/resource';
+import { NotFoundError, ResourceError, ValidationError } from '@src/modules/errors/resource';
 import { ServerError } from '@src/modules/errors/server';
 
 interface UnkownError extends Error {

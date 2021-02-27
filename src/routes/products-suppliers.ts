@@ -5,19 +5,9 @@ import express from 'express';
 
 const router = express.Router();
 
-router.post(
-  '/',
-  middleware.authenticate,
-  validator.validateType('productSupplier'),
-  productSupplierController.create
-);
+router.post('/', middleware.authenticate, validator.validateType('productSupplier'), productSupplierController.create);
 
-router.put(
-  '/',
-  middleware.authenticate,
-  validator.validateType('productSupplier'),
-  productSupplierController.update
-);
+router.put('/', middleware.authenticate, validator.validateType('productSupplier'), productSupplierController.update);
 
 router.delete(
   '/',

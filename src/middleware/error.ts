@@ -3,20 +3,14 @@ import logger from '@lib/logger';
 import { AuthenticateRequest } from '@middleware/authenticate';
 import { Errors } from '@modules/errors';
 import { createError } from '@src/modules/errors/index';
-import {
-  ErrorRequestHandler,
-  NextFunction,
-  RequestHandler,
-  Response,
-} from 'express';
+import { ErrorRequestHandler, NextFunction, RequestHandler, Response } from 'express';
 
 /**
  * @param req
  * @param res
  */
 const notFound: RequestHandler = (req: AuthenticateRequest, res: Response) => {
-  const userId =
-    typeof req.accessToken === 'undefined' ? null : req.accessToken.id;
+  const userId = typeof req.accessToken === 'undefined' ? null : req.accessToken.id;
   const error = createError('NotFoundError', "La page demandée n'existe pas");
   logger.error({
     ip: req.ip,
@@ -41,8 +35,7 @@ const server: ErrorRequestHandler = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction
 ) => {
-  const userId =
-    typeof req.accessToken === 'undefined' ? null : req.accessToken.id;
+  const userId = typeof req.accessToken === 'undefined' ? null : req.accessToken.id;
   logger.error({
     ip: req.ip,
     path: req.originalUrl,
@@ -50,9 +43,7 @@ const server: ErrorRequestHandler = (
     userId,
     err,
   });
-  return res
-    .status(err.status || constants.statusCodes.internalServerError)
-    .send({ errors: [err.message] });
+  return res.status(err.status || constants.statusCodes.internalServerError).send({ errors: [err.message] });
 };
 
 export default {

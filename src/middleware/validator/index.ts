@@ -12,14 +12,11 @@ ajvError(ajv);
  *
  * @param resourceType
  */
-const validateType = (
-  resourceType:
-    | 'user'
-    | 'userDetails'
-    | 'product'
-    | 'supplier'
-    | 'productSupplier'
-) => (req: Request, res: Response, next: NextFunction): void => {
+const validateType = (resourceType: 'user' | 'userDetails' | 'product' | 'supplier' | 'productSupplier') => (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   const validate = ajv.compile(validator.getSchema(resourceType));
   validate(req.body);
 
@@ -38,10 +35,11 @@ const validateType = (
  * @param paramName
  * @param typeName
  */
-const validateParam = (
-  paramName: 'productId' | 'supplierId',
-  typeName: 'number'
-) => (req: Request, res: Response, next: NextFunction): void => {
+const validateParam = (paramName: 'productId' | 'supplierId', typeName: 'number') => (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   const param = req.params[paramName];
 
   if (typeName === 'number') {

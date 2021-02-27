@@ -24,14 +24,10 @@ const logger: winston.Logger = createLogger({
     new transports.File({
       filename: '../storage/logs/error.log',
       level: 'error',
-      maxsize: 10485760, // 100MB
+      maxsize: 10485760, // 10MB
       maxFiles: 3,
       handleExceptions: true,
-      format: format.combine(
-        filterOnly('error'),
-        format.timestamp(),
-        format.json()
-      ),
+      format: format.combine(filterOnly('error'), format.timestamp(), format.json()),
     }),
     new transports.File({
       filename: '../storage/logs/info.log',
@@ -39,11 +35,7 @@ const logger: winston.Logger = createLogger({
       maxsize: 10485760, // 10MB
       maxFiles: 3,
       handleExceptions: true,
-      format: format.combine(
-        filterOnly('info'),
-        format.timestamp(),
-        format.json()
-      ),
+      format: format.combine(filterOnly('info'), format.timestamp(), format.json()),
     }),
   ],
   exitOnError: false,

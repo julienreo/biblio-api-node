@@ -64,11 +64,7 @@ class Database {
     sql: string,
     options: QueryOptions
   ): Promise<
-    | mysql.RowDataPacket[]
-    | mysql.RowDataPacket[][]
-    | mysql.OkPacket
-    | mysql.OkPacket[]
-    | mysql.ResultSetHeader
+    mysql.RowDataPacket[] | mysql.RowDataPacket[][] | mysql.OkPacket | mysql.OkPacket[] | mysql.ResultSetHeader
   > {
     const { params } = options;
     const connection = options.connection ? options.connection : this.pool;
@@ -76,10 +72,7 @@ class Database {
     if (params) {
       // Prepared statements
       const formattedQuery = formatQuery(sql, params);
-      const [res] = await connection.execute(
-        formattedQuery.sql,
-        formattedQuery.params
-      );
+      const [res] = await connection.execute(formattedQuery.sql, formattedQuery.params);
       return res;
     }
 

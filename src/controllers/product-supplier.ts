@@ -5,11 +5,7 @@ import resourceService from '@services/resource';
 import { createError } from '@src/modules/errors/index';
 import { NextFunction, Response } from 'express';
 
-const create = async (
-  req: AuthenticateRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const create = async (req: AuthenticateRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const productSupplierData = req.body;
 
@@ -27,41 +23,23 @@ const create = async (
     });
     res.send({
       success: true,
-      message:
-        "L'association entre le produit et le fournisseur a été créée avec succès",
+      message: "L'association entre le produit et le fournisseur a été créée avec succès",
     });
   } catch (e) {
-    if (
-      typeof e.errno !== 'undefined' &&
-      e.errno === constants.dbErrorCodes.foreignKeyConstraintAddError
-    ) {
-      return next(
-        createError(
-          'InsertionError',
-          "Le produit ou le fournisseur n'existe pas"
-        )
-      );
+    if (typeof e.errno !== 'undefined' && e.errno === constants.dbErrorCodes.foreignKeyConstraintAddError) {
+      return next(createError('InsertionError', "Le produit ou le fournisseur n'existe pas"));
     }
     return next(e);
   }
 };
 
-const update = async (
-  req: AuthenticateRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const update = async (req: AuthenticateRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { fkProduct, fkSupplier, notes } = req.body;
 
     // Notes field is the only one that can be updated but is optional, check that it has been passed
     if (typeof notes === 'undefined') {
-      return next(
-        createError(
-          'ResourceError',
-          'Le champ à mettre à jour (notes) est manquant'
-        )
-      );
+      return next(createError('ResourceError', 'Le champ à mettre à jour (notes) est manquant'));
     }
 
     await resourceService.updateOne(
@@ -69,10 +47,8 @@ const update = async (
       { notes },
       { fkProduct, fkSupplier, fkCompany: req.accessToken.companyId },
       {
-        notFound:
-          "L'association entre le produit et le fournisseur n'existe pas",
-        alreadyExists:
-          'Une association entre un produit et un fournisseur avec les mêmes caractéristiques existe déjà',
+        notFound: "L'association entre le produit et le fournisseur n'existe pas",
+        alreadyExists: 'Une association entre un produit et un fournisseur avec les mêmes caractéristiques existe déjà',
       }
     );
 
@@ -84,19 +60,14 @@ const update = async (
     });
     res.send({
       success: true,
-      message:
-        "L'association entre le produit et le fournisseur a été mise à jour avec succès",
+      message: "L'association entre le produit et le fournisseur a été mise à jour avec succès",
     });
   } catch (e) {
     return next(e);
   }
 };
 
-const remove = async (
-  req: AuthenticateRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const remove = async (req: AuthenticateRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const productSupplierData = req.body;
 
@@ -114,8 +85,7 @@ const remove = async (
     });
     res.send({
       success: true,
-      message:
-        "L'association entre le produit et le fournisseur a été supprimée avec succès",
+      message: "L'association entre le produit et le fournisseur a été supprimée avec succès",
     });
   } catch (e) {
     return next(e);

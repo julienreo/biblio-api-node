@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "module": "CommonJS",
     "esModuleInterop": true,
     "moduleResolution": "node",
     "pretty": true,
@@ -10,9 +9,6 @@
     "noImplicitAny": true,
     "rootDir": ".",
     "outDir": "./dist",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
     "baseUrl": ".",
     "paths": {
       "@src/*": [

@@ -4,11 +4,7 @@ import databaseService from '@services/database';
 import resourceService from '@services/resource';
 import { NextFunction, Response } from 'express';
 
-const fetchOne = async (
-  req: AuthenticateRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const fetchOne = async (req: AuthenticateRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const product = await resourceService.retrieveOne(
       'product',
@@ -28,11 +24,7 @@ const fetchOne = async (
   }
 };
 
-const fetchAll = async (
-  req: AuthenticateRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const fetchAll = async (req: AuthenticateRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const products = await resourceService.retrieveAll('product', {
       fkCompany: req.accessToken.companyId,
@@ -50,11 +42,7 @@ const fetchAll = async (
   }
 };
 
-const create = async (
-  req: AuthenticateRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const create = async (req: AuthenticateRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const productData = req.body;
     const { supplierId } = req.params;
@@ -63,12 +51,9 @@ const create = async (
     productData.fkCompany = companyId;
 
     await databaseService.makeTransaction(async (connection) => {
-      const productId = await resourceService.insertOne(
-        'product',
-        productData,
-        'Le produit existe déjà',
-        { connection }
-      );
+      const productId = await resourceService.insertOne('product', productData, 'Le produit existe déjà', {
+        connection,
+      });
 
       if (supplierId) {
         // A supplier might not be retrieved in case it doesn't exist or doesn't belong to the company
@@ -109,11 +94,7 @@ const create = async (
   }
 };
 
-const update = async (
-  req: AuthenticateRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const update = async (req: AuthenticateRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const productData = req.body;
 
@@ -145,11 +126,7 @@ const update = async (
   }
 };
 
-const remove = async (
-  req: AuthenticateRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const remove = async (req: AuthenticateRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { productId } = req.params;
     const { companyId } = req.accessToken;

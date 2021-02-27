@@ -5,17 +5,8 @@ import express from 'express';
 
 const router = express.Router();
 
-router.post(
-  '/login',
-  validator.validateType('userDetails'),
-  userController.login
-);
+router.post('/login', validator.validateType('userDetails'), userController.login);
 
-router.post(
-  '/',
-  middleware.authenticate,
-  validator.validateType('user'),
-  userController.create
-);
+router.post('/', middleware.authenticate, validator.validateType('user'), userController.create);
 
 export default router;

@@ -1,24 +1,8 @@
 import { camelToSnakeObject, snakeToCamelObject } from '@lib/utils';
-import {
-  CompanyData,
-  CompanyFields,
-  CompanyFieldsValues,
-} from '@models/company';
-import {
-  ProductData,
-  ProductFields,
-  ProductFieldsValues,
-} from '@models/product';
-import {
-  ProductSupplierData,
-  ProductSupplierFields,
-  ProductSupplierFieldsValues,
-} from '@models/product-supplier';
-import {
-  SupplierData,
-  SupplierFields,
-  SupplierFieldsValues,
-} from '@models/supplier';
+import { CompanyData, CompanyFields, CompanyFieldsValues } from '@models/company';
+import { ProductData, ProductFields, ProductFieldsValues } from '@models/product';
+import { ProductSupplierData, ProductSupplierFields, ProductSupplierFieldsValues } from '@models/product-supplier';
+import { SupplierData, SupplierFields, SupplierFieldsValues } from '@models/supplier';
 import { UserData, UserFields, UserFieldsValues } from '@models/user';
 import databaseClient, { QueryOptions } from '@modules/database';
 import { ResultSetHeader } from 'mysql2';
@@ -31,18 +15,8 @@ export default class Resource {
    * @param data
    */
   constructor(
-    allowedFields:
-      | UserFields
-      | ProductFields
-      | SupplierFields
-      | CompanyFields
-      | ProductSupplierFields,
-    data:
-      | UserData
-      | ProductData
-      | SupplierData
-      | CompanyData
-      | ProductSupplierData
+    allowedFields: UserFields | ProductFields | SupplierFields | CompanyFields | ProductSupplierFields,
+    data: UserData | ProductData | SupplierData | CompanyData | ProductSupplierData
   ) {
     allowedFields.forEach(
       (
@@ -54,10 +28,10 @@ export default class Resource {
           | ProductSupplierFieldsValues
       ) => {
         // If an optional field is not passed
-        if (typeof (data as any)[field] === 'undefined') {
-          (this as any)[field] = null;
+        if (typeof ((data as unknown) as { [key: string]: string | number })[field] === 'undefined') {
+          ((this as unknown) as { [key: string]: string | number })[field] = null;
         } else {
-          (this as any)[field] = (data as any)[field];
+          ((this as unknown) as { [key: string]: string | number })[field] = (data as any)[field];
         }
       }
     );
@@ -115,9 +89,7 @@ export default class Resource {
       connection,
     })) as { [key: string]: string | number | Date }[];
 
-    return typeof res[0] === 'undefined'
-      ? []
-      : res.map((v) => snakeToCamelObject(v));
+    return typeof res[0] === 'undefined' ? [] : res.map((v) => snakeToCamelObject(v));
   }
 
   /**
@@ -127,14 +99,12 @@ export default class Resource {
     const { connection } = options;
     const { table } = Object.getPrototypeOf(this).constructor;
 
-    const resource = camelToSnakeObject(this as any);
+    const resource = camelToSnakeObject((this as unknown) as { [key: string]: string | number });
 
     const keys = Object.keys(resource);
     const preparedValues = keys.map((item) => `:${item}`);
 
-    const sql = `INSERT INTO ${table} (${keys.join(
-      ','
-    )}) VALUES (${preparedValues.join(',')})`;
+    const sql = `INSERT INTO ${table} (${keys.join(',')}) VALUES (${preparedValues.join(',')})`;
 
     return (await databaseClient.query(sql, {
       params: resource,
@@ -177,10 +147,7 @@ export default class Resource {
    * @param object
    * @param options
    */
-  static async deleteOne(
-    object: { [key: string]: number },
-    options: QueryOptions = {}
-  ): Promise<ResultSetHeader> {
+  static async deleteOne(object: { [key: string]: number }, options: QueryOptions = {}): Promise<ResultSetHeader> {
     const { connection } = options;
     const { table } = this;
 

@@ -6,11 +6,7 @@ import resourceService from '@services/resource';
 import { createError } from '@src/modules/errors/index';
 import { NextFunction, Response } from 'express';
 
-const fetchOne = async (
-  req: AuthenticateRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const fetchOne = async (req: AuthenticateRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { supplierId } = req.params;
 
@@ -32,11 +28,7 @@ const fetchOne = async (
   }
 };
 
-const fetchAll = async (
-  req: AuthenticateRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const fetchAll = async (req: AuthenticateRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const suppliers = await resourceService.retrieveAll('supplier', {
       fkCompany: req.accessToken.companyId,
@@ -54,11 +46,7 @@ const fetchAll = async (
   }
 };
 
-const create = async (
-  req: AuthenticateRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const create = async (req: AuthenticateRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const supplierData = req.body;
     const { productId } = req.params;
@@ -67,12 +55,9 @@ const create = async (
     supplierData.fkCompany = companyId;
 
     await databaseService.makeTransaction(async (connection) => {
-      const supplierId = await resourceService.insertOne(
-        'supplier',
-        supplierData,
-        'Le fournisseur existe déjà',
-        { connection }
-      );
+      const supplierId = await resourceService.insertOne('supplier', supplierData, 'Le fournisseur existe déjà', {
+        connection,
+      });
 
       if (productId) {
         // A product might not be retrieved in case it doesn't exist or doesn't belong to the company
@@ -113,11 +98,7 @@ const create = async (
   }
 };
 
-const update = async (
-  req: AuthenticateRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const update = async (req: AuthenticateRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const supplierData = req.body;
 
@@ -130,8 +111,7 @@ const update = async (
       },
       {
         notFound: "Le fournisseur n'existe pas",
-        alreadyExists:
-          'Un fournisseur avec les mêmes caractéristiques existe déjà',
+        alreadyExists: 'Un fournisseur avec les mêmes caractéristiques existe déjà',
       }
     );
 
@@ -150,11 +130,7 @@ const update = async (
   }
 };
 
-const remove = async (
-  req: AuthenticateRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const remove = async (req: AuthenticateRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     await resourceService.removeOne(
       'supplier',
@@ -176,16 +152,8 @@ const remove = async (
       message: 'Le fournisseur a été supprimé avec succès',
     });
   } catch (e) {
-    if (
-      typeof e.errno !== 'undefined' &&
-      e.errno === constants.dbErrorCodes.foreignKeyConstraintDeleteError
-    ) {
-      return next(
-        createError(
-          'RemovalError',
-          'Des produits sont associés à ce fournisseur'
-        )
-      );
+    if (typeof e.errno !== 'undefined' && e.errno === constants.dbErrorCodes.foreignKeyConstraintDeleteError) {
+      return next(createError('RemovalError', 'Des produits sont associés à ce fournisseur'));
     }
     return next(e);
   }

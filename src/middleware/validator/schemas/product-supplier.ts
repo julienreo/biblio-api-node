@@ -28,8 +28,7 @@ export default {
       maxLength: 10000,
       errorMessage: {
         type: 'Description association produit / fournisseur : format invalide',
-        maxLength:
-          'Description association produit / fournisseur : 10 000 caractères maximum autorisés',
+        maxLength: 'Description association produit / fournisseur : 10 000 caractères maximum autorisés',
       },
     },
   },

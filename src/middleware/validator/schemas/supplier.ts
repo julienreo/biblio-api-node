@@ -28,8 +28,7 @@ export default {
       maxLength: 10000,
       errorMessage: {
         type: 'Description fournisseur : format invalide',
-        maxLength:
-          'Description fournisseur : 10 000 caractères maximum autorisés',
+        maxLength: 'Description fournisseur : 10 000 caractères maximum autorisés',
       },
     },
   },

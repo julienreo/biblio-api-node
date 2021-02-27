@@ -4,9 +4,7 @@ import mysql from 'mysql2/promise';
 /**
  * @param handler
  */
-const makeTransaction = async (
-  handler: (conn: mysql.PoolConnection) => Promise<void>
-): Promise<void> => {
+const makeTransaction = async (handler: (conn: mysql.PoolConnection) => Promise<void>): Promise<void> => {
   const connection = await databaseClient.pool.getConnection();
 
   await connection.beginTransaction();
