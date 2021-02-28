@@ -4,7 +4,7 @@ import { createError } from '@src/modules/errors/index';
 import redis from 'redis';
 
 class Cache {
-  redisClient: redis.RedisClient;
+  private redisClient: redis.RedisClient;
 
   constructor() {
     this.redisClient = redis.createClient({
