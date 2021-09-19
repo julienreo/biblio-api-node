@@ -44,6 +44,11 @@ The API exposes [routes](#routes) to handle standard **CRUD** operations:
 **MariaDB** is used as a relational **Database Management System** to persist data.
 
 
+## DATABASE DRIVER
+
+A custom **ORM** has been built to interact with the database
+
+
 ## CACHING
 
 **Redis** is used for **caching** user requests responses.
